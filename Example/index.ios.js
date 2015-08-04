@@ -25,22 +25,23 @@ var Example = React.createClass({
   render: function() {
     return (
       <ScrollView style={styles.container}>
+        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
         <Lightbox underlayColor="white">
           <Image
             style={styles.contain}
             resizeMode="contain"
-            source={{ uri: 'http://www.use.com/images/s_2/Cat_in_the_hat_d2bb58c4bf497eaec918_1.jpg' }}
+            source={{ uri: 'http://www.yayomg.com/wp-content/uploads/2014/04/yayomg-pig-wearing-party-hat.jpg' }}
           />
         </Lightbox>
-        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text></View>
+        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
         <Lightbox>
           <Image
             style={styles.cover}
             resizeMode="cover"
-            source={{ uri: 'http://www.use.com/images/s_2/Cat_in_the_hat_d2bb58c4bf497eaec918_1.jpg' }}
+            source={{ uri: 'http://cdn.lolwot.com/wp-content/uploads/2015/07/20-pictures-of-animals-in-hats-to-brighten-up-your-day-1.jpg' }}
           />
         </Lightbox>
-        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text></View>
+        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
         <Lightbox
           ref="lightbox"
           header={(
@@ -48,20 +49,20 @@ var Example = React.createClass({
               <Text style={styles.closeButton}>Close</Text>
             </TouchableOpacity>
           )}>
-          <View style={styles.redBox}>
+          <View style={styles.customHeaderBox}>
             <Text>I have a custom header</Text>
           </View>
         </Lightbox>
-        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text></View>
+        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
         <View style={styles.row}>
           <Lightbox style={styles.col}>
-            <View style={styles.square}><Text style={styles.squareText}>I'm a square</Text></View>
+            <View style={[styles.square, styles.squareFirst]}><Text style={styles.squareText}>I'm a square</Text></View>
           </Lightbox>
           <Lightbox style={styles.col}>
-            <View style={styles.square}><Text style={styles.squareText}>I'm a square</Text></View>
+            <View style={[styles.square, styles.squareSecond]}><Text style={styles.squareText}>I'm a square</Text></View>
           </Lightbox>
         </View>
-        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text></View>
+        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
       </ScrollView>
     );
   },
@@ -82,9 +83,9 @@ var styles = StyleSheet.create({
     margin: 10,
     alignSelf: 'flex-end',
   },
-  redBox: {
+  customHeaderBox: {
     height: 150,
-    backgroundColor: 'red',
+    backgroundColor: '#6C7A89',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -99,12 +100,18 @@ var styles = StyleSheet.create({
   square: {
     width: WINDOW_WIDTH/2,
     height: WINDOW_WIDTH/2,
-    backgroundColor: '#ccc',
     justifyContent: 'center',
     alignSelf: 'center',
   },
+  squareFirst: {
+    backgroundColor: '#C0392B',
+  },
+  squareSecond: {
+    backgroundColor: '#019875',
+  },
   squareText: {
     textAlign: 'center',
+    color: 'white',
   },
   cover: {
     height: 300,
@@ -112,7 +119,7 @@ var styles = StyleSheet.create({
   },
   contain: {
     flex: 1,
-    height: 200,
+    height: 150,
   },
   text: {
     marginVertical: BASE_PADDING*2,
