@@ -26,6 +26,7 @@ var LightboxView = React.createClass({
 |**`header`**|`element`|Custom header instead of default with X button|
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
+|**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
 
 ## Example 
 

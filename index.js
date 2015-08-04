@@ -27,11 +27,11 @@ var DRAG_DISMISS_THRESHOLD = 150;
 
 var Lightbox = React.createClass({
   propTypes: {
-    header:   PropTypes.element,
-    onOpen:   PropTypes.func,
-    onClose:  PropTypes.func,
+    header:         PropTypes.element,
+    underlayColor:  PropTypes.string,
+    onOpen:         PropTypes.func,
+    onClose:        PropTypes.func,
   },
-
   getDefaultProps: function() {
     return {
       onOpen: () => {},
@@ -204,7 +204,12 @@ var Lightbox = React.createClass({
         style={this.props.style}
       >
         <Animated.View style={layoutOpacityStyle}>
-          <TouchableHighlight onPress={this.toggle}>{this.props.children}</TouchableHighlight>
+          <TouchableHighlight
+            underlayColor={this.props.underlayColor}
+            onPress={this.toggle}
+          >
+            {this.props.children}
+          </TouchableHighlight>
         </Animated.View>
         <Overlay isVisible={this.state.isOpen}>
           <Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>
