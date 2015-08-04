@@ -27,6 +27,10 @@ var LightboxView = React.createClass({
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
 
+## Example 
+
+Check full example in the `Example` folder. 
+
 ## License
 
 [MIT License](http://opensource.org/licenses/mit-license.html). © Joel Arvidsson
