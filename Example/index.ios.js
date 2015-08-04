@@ -25,10 +25,18 @@ var Example = React.createClass({
   render: function() {
     return (
       <ScrollView style={styles.container}>
+        <Lightbox underlayColor="white">
+          <Image
+            style={styles.contain}
+            resizeMode="contain"
+            source={{ uri: 'http://www.use.com/images/s_2/Cat_in_the_hat_d2bb58c4bf497eaec918_1.jpg' }}
+          />
+        </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text></View>
         <Lightbox>
           <Image
-            style={styles.image}
+            style={styles.cover}
+            resizeMode="cover"
             source={{ uri: 'http://www.use.com/images/s_2/Cat_in_the_hat_d2bb58c4bf497eaec918_1.jpg' }}
           />
         </Lightbox>
@@ -98,9 +106,13 @@ var styles = StyleSheet.create({
   squareText: {
     textAlign: 'center',
   },
-  image: {
+  cover: {
     height: 300,
     flex: 1,
+  },
+  contain: {
+    flex: 1,
+    height: 200,
   },
   text: {
     marginVertical: BASE_PADDING*2,
