@@ -1,5 +1,13 @@
 # react-native-lightbox
 
+## Installation
+
+```
+npm install --save react-native-lightbox
+```
+
+This module depends on [`react-native-overlay`](https://github.com/brentvatne/react-native-overlay), so if you haven't already integrated it, follow [these instructions](https://github.com/brentvatne/react-native-overlay#add-it-to-your-project). **Note**: `react-native-overlay` should already be installed as a dependency of `react-native-lightbox`, have a look in `node_modules/react-native-lightbox/node_modules/react-native-overlay`.
+
 ## Usage
 
 ```js
@@ -27,6 +35,10 @@ var LightboxView = React.createClass({
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
+
+## Demo
+
+![Demo](https://cloud.githubusercontent.com/assets/378279/9074360/16eac5d6-3b09-11e5-90af-a69980e9f4be.gif)
 
 ## Example 
 
