@@ -1,7 +1,7 @@
 {
   "name": "react-native-lightbox",
-  "version": "0.1.1",
-  "description": "Full screen lightbox popups for React Native",
+  "version": "0.2.0",
+  "description": "Images etc in Full Screen Lightbox Popovers for React Native",
   "main": "index.js",
   "scripts": {
     "test": "flow check"
