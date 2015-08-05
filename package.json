@@ -1,6 +1,6 @@
 {
   "name": "react-native-lightbox",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Full screen lightbox popups for React Native",
   "main": "index.js",
   "scripts": {
