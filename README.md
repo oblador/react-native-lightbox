@@ -27,6 +27,21 @@ var LightboxView = React.createClass({
 });
 ```
 
+### Manual Opening & Closing
+
+The component exposes the `open` and `close` methods. Smack a `ref` on the `<Lightbox>` and you're good to go. This is probably quite useful if you're doing a custom header.
+
+```js
+render: function() {
+  return (
+    <Lightbox ref="lightbox">…</Lightbox>
+  );
+},
+handleSomething: function() {
+  this.refs.lightbox.open();
+}
+```
+
 ## Properties
 
 | Prop | Type | Description |
