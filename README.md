@@ -51,6 +51,7 @@ handleSomething: function() {
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
+|**`swipeToDismiss`**|`bool`|Enables gestures to dismiss the fullscreen mode by swiping up or down, defaults to `true`.|
 
 ## Demo
 

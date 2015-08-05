@@ -35,9 +35,11 @@ var Lightbox = React.createClass({
     underlayColor:  PropTypes.string,
     onOpen:         PropTypes.func,
     onClose:        PropTypes.func,
+    swipeToDismiss: PropTypes.bool,
   },
   getDefaultProps: function() {
     return {
+      swipeToDismiss: true,
       onOpen: () => {},
       onClose: () => {},
     };
@@ -166,7 +168,11 @@ var Lightbox = React.createClass({
   },
 
   render: function() {
-    var { header } = this.props;
+    var {
+      header,
+      swipeToDismiss,
+    } = this.props;
+
     var {
       isOpen,
       isPanning,
@@ -186,6 +192,11 @@ var Lightbox = React.createClass({
     var lightboxOpacityStyle = {
       opacity: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.opacity, target.opacity]})
     };
+
+    var handlers;
+    if(swipeToDismiss) {
+      handlers = this._panResponder.panHandlers;
+    }
 
     var dragStyle;
     if(isPanning) {
@@ -233,7 +244,7 @@ var Lightbox = React.createClass({
         </Animated.View>
         <Overlay isVisible={this.state.isOpen}>
           <Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>
-          <Animated.View style={[openStyle, dragStyle]} {...this._panResponder.panHandlers}>
+          <Animated.View style={[openStyle, dragStyle]} {...handlers}>
             {overlayContent}
           </Animated.View>
           <Animated.View style={[styles.header, lightboxOpacityStyle]}>
