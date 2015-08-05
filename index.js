@@ -113,7 +113,6 @@ var Lightbox = React.createClass({
       StatusBarIOS.setHidden(true, 'fade');
       this.props.onOpen();
       this.state.pan.setValue(0);
-      this.state.layoutOpacity.setValue(0);
 
       this.setState({
         isOpen: true,
@@ -131,6 +130,7 @@ var Lightbox = React.createClass({
           opacity: 0,
         },
       }, () => {
+        this.state.layoutOpacity.setValue(0);
         Animated.spring(
           this.state.openVal,
           { toValue: 1, ...SPRING_CONFIG }
@@ -148,13 +148,16 @@ var Lightbox = React.createClass({
       this.state.openVal,
       { toValue: 0, ...SPRING_CONFIG }
     ).start(() => {
-      this.setState({
-        isOpen: false,
-        isAnimating: false,
-      },
-        this.props.onClose
-      );
       this.state.layoutOpacity.setValue(1);
+      // Delay isOpen until next tick to avoid flicker.
+      setTimeout(() => {
+        this.setState({
+          isOpen: false,
+          isAnimating: false,
+        },
+          this.props.onClose
+        );
+      });
     });
   },
 
