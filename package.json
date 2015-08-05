@@ -31,6 +31,7 @@
     "react-native": ">=0.8.0 || 0.8.0-rc || 0.8.0-rc.2 || 0.9.0-rc"
   },
   "dependencies": {
-    "react-native-overlay": "^0.2.8"
+    "react-native-overlay": "^0.2.8",
+    "react-tools": "^0.13.3"
   }
 }

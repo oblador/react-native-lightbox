@@ -46,6 +46,7 @@ handleSomething: function() {
 
 | Prop | Type | Description |
 |---|---|---|
+|**`activeProps`**|`object`|Optional set of props applied to the content component when in lightbox mode. Usable for applying custom styles or higher resolution image source.|
 |**`header`**|`element`|Custom header instead of default with X button|
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|

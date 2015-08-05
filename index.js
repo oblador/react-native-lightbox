@@ -18,6 +18,9 @@ var {
   StatusBarIOS,
 } = React;
 
+var cloneWithProps = require('react-tools/src/utils/cloneWithProps');
+var onlyChild = require('react-tools/src/utils/onlyChild');
+
 var Overlay = require('react-native-overlay');
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
@@ -27,6 +30,7 @@ var DRAG_DISMISS_THRESHOLD = 150;
 
 var Lightbox = React.createClass({
   propTypes: {
+    activeProps:    PropTypes.object,
     header:         PropTypes.element,
     underlayColor:  PropTypes.string,
     onOpen:         PropTypes.func,
@@ -206,6 +210,14 @@ var Lightbox = React.createClass({
       );
     }
 
+    var overlayContent = this.props.children;
+    if(this.props.activeProps) {
+      overlayContent = cloneWithProps(
+        onlyChild(overlayContent),
+        this.props.activeProps
+      );
+    }
+
     return (
       <View
         ref={component => this._root = component}
@@ -222,7 +234,7 @@ var Lightbox = React.createClass({
         <Overlay isVisible={this.state.isOpen}>
           <Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>
           <Animated.View style={[openStyle, dragStyle]} {...this._panResponder.panHandlers}>
-            {this.props.children}
+            {overlayContent}
           </Animated.View>
           <Animated.View style={[styles.header, lightboxOpacityStyle]}>
             {header}
