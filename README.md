@@ -6,7 +6,7 @@
 npm install --save react-native-lightbox
 ```
 
-**This module requires React Native 0.11 or later***
+**This module requires React Native 0.11 or later**
 
 ## Usage
 
