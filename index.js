@@ -16,12 +16,11 @@ var {
   TouchableHighlight,
   TouchableOpacity,
   StatusBarIOS,
+  Modal,
+  cloneElement,
 } = React;
 
-var cloneWithProps = require('react-tools/src/utils/cloneWithProps');
-var onlyChild = require('react-tools/src/utils/onlyChild');
-
-var Overlay = require('react-native-overlay');
+var onlyChild = require('react-native/node_modules/react-tools/src/isomorphic/children/onlyChild');
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
@@ -223,7 +222,7 @@ var Lightbox = React.createClass({
 
     var overlayContent = this.props.children;
     if(this.props.activeProps) {
-      overlayContent = cloneWithProps(
+      overlayContent = cloneElement(
         onlyChild(overlayContent),
         this.props.activeProps
       );
@@ -242,7 +241,7 @@ var Lightbox = React.createClass({
             {this.props.children}
           </TouchableHighlight>
         </Animated.View>
-        <Overlay isVisible={this.state.isOpen}>
+        <Modal visible={this.state.isOpen} transparent={true}>
           <Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>
           <Animated.View style={[openStyle, dragStyle]} {...handlers}>
             {overlayContent}
@@ -250,7 +249,7 @@ var Lightbox = React.createClass({
           <Animated.View style={[styles.header, lightboxOpacityStyle]}>
             {header}
           </Animated.View>
-        </Overlay>
+        </Modal>
       </View>
     );
   }

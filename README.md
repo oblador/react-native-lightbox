@@ -6,7 +6,7 @@
 npm install --save react-native-lightbox
 ```
 
-This module depends on [`react-native-overlay`](https://github.com/brentvatne/react-native-overlay), so if you haven't already integrated it, follow [these instructions](https://github.com/brentvatne/react-native-overlay#add-it-to-your-project). **Note**: `react-native-overlay` should already be installed as a dependency of `react-native-lightbox`, have a look in `node_modules/react-native-lightbox/node_modules/react-native-overlay`.
+**This module requires React Native 0.11 or later***
 
 ## Usage
 
