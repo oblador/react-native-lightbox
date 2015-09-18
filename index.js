@@ -17,10 +17,9 @@ var {
   TouchableOpacity,
   StatusBarIOS,
   Modal,
+  Children,
   cloneElement,
 } = React;
-
-var onlyChild = require('react-native/node_modules/react-tools/src/isomorphic/children/onlyChild');
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
@@ -115,7 +114,9 @@ var Lightbox = React.createClass({
 
   open: function() {
     this._root.measure((ox, oy, width, height, px, py) => {
-      StatusBarIOS.setHidden(true, 'fade');
+      if(StatusBarIOS) {
+        StatusBarIOS.setHidden(true, 'fade');
+      }
       this.props.onOpen();
       this.state.pan.setValue(0);
 
@@ -145,7 +146,9 @@ var Lightbox = React.createClass({
   },
 
   close: function() {
-    StatusBarIOS.setHidden(false, 'fade');
+    if(StatusBarIOS) {
+      StatusBarIOS.setHidden(false, 'fade');
+    }
     this.setState({
       isAnimating: true,
     });
@@ -223,7 +226,7 @@ var Lightbox = React.createClass({
     var overlayContent = this.props.children;
     if(this.props.activeProps) {
       overlayContent = cloneElement(
-        onlyChild(overlayContent),
+        Children.only(overlayContent),
         this.props.activeProps
       );
     }
