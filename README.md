@@ -10,13 +10,15 @@ npm install --save react-native-lightbox
 
 ## Usage
 
+`navigator` property is optional but recommended on iOS, see next section for `Navigator` configuration.
+
 ```js
 var Lightbox = require('react-native-lightbox');
 
 var LightboxView = React.createClass({
   render: function() {
     return (
-      <Lightbox>
+      <Lightbox navigator={this.props.navigator}>
         <Image
           style={{ height: 300 }}
           source={{ uri: 'http://knittingisawesome.com/wp-content/uploads/2012/12/cat-wearing-a-reindeer-hat1.jpg' }}
@@ -27,19 +29,33 @@ var LightboxView = React.createClass({
 });
 ```
 
-### Manual Opening & Closing
+### Navigator setup/Android support
 
-The component exposes the `open` and `close` methods. Smack a `ref` on the `<Lightbox>` and you're good to go. This is probably quite useful if you're doing a custom header.
+For android support you must pass a reference to a `Navigator` since it does not yet have the `Modal` component and is not on the official todo list. See the `Example` project for a complete example. 
 
-```js
-render: function() {
-  return (
-    <Lightbox ref="lightbox">…</Lightbox>
-  );
-},
-handleSomething: function() {
-  this.refs.lightbox.open();
-}
+```
+var MyApp = React.createClass({
+  renderScene: function(route, navigator) {
+    var Component = route.component;
+
+    return (
+      <Component navigator={navigator} route={route} {...route.passProps} />
+    );
+  },
+
+  render: function() {
+    return (
+      <Navigator
+        ref="navigator"
+        style={{ flex: 1 }}
+        renderScene={this.renderScene}
+        initialRoute={{
+          component: LightboxView,
+        }}
+      />
+    );
+  }
+});
 ```
 
 ## Properties
@@ -47,7 +63,7 @@ handleSomething: function() {
 | Prop | Type | Description |
 |---|---|---|
 |**`activeProps`**|`object`|Optional set of props applied to the content component when in lightbox mode. Usable for applying custom styles or higher resolution image source.|
-|**`header`**|`element`|Custom header instead of default with X button|
+|**`renderHeader(close)`**|`element`|Custom header instead of default with X button|
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
