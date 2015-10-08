@@ -1,5 +1,5 @@
 /**
- * @providesModule Lightbox
+ * @providesModule LightboxOverlay
  */
 'use strict';
 
@@ -11,54 +11,28 @@ var {
   Animated,
   StyleSheet,
   Dimensions,
-  LayoutAnimation,
   PanResponder,
-  TouchableHighlight,
   TouchableOpacity,
   StatusBarIOS,
   Modal,
-  Children,
-  cloneElement,
+  Platform,
 } = React;
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
 var SPRING_CONFIG = { tension: 30, friction: 7 };
 var DRAG_DISMISS_THRESHOLD = 150;
+var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 
-var Lightbox = React.createClass({
-  propTypes: {
-    activeProps:    PropTypes.object,
-    header:         PropTypes.element,
-    underlayColor:  PropTypes.string,
-    onOpen:         PropTypes.func,
-    onClose:        PropTypes.func,
-    swipeToDismiss: PropTypes.bool,
-  },
-  getDefaultProps: function() {
-    return {
-      swipeToDismiss: true,
-      onOpen: () => {},
-      onClose: () => {},
-    };
-  },
-
+var LightboxOverlay = React.createClass({
   getInitialState: function() {
     return {
-      isOpen: false,
       isAnimating: false,
       isPanning: false,
-      width: 0,
-      height: 0,
       target: {
         x: 0,
         y: 0,
         opacity: 1,
-      },
-      origin: {
-        x: 0,
-        y: 0,
-        opacity: 0,
       },
       pan: new Animated.Value(0),
       openVal: new Animated.Value(0),
@@ -102,47 +76,22 @@ var Lightbox = React.createClass({
         }
       },
     });
-  },
-
-  toggle: function() {
-    if(this.state.isOpen) {
-      this.close();
-    } else {
+    if(this.props.isOpen) {
       this.open();
     }
   },
 
   open: function() {
-    this._root.measure((ox, oy, width, height, px, py) => {
-      if(StatusBarIOS) {
-        StatusBarIOS.setHidden(true, 'fade');
-      }
-      this.props.onOpen();
-      this.state.pan.setValue(0);
+    if(StatusBarIOS) {
+      StatusBarIOS.setHidden(true, 'fade');
+    }
+    this.state.pan.setValue(0);
+    this.setState({ isAnimating: true });
 
-      this.setState({
-        isOpen: true,
-        isAnimating: true,
-        width,
-        height,
-        target: {
-          x: 0,
-          y: 0,
-          opacity: 1,
-        },
-        origin: {
-          x: px,
-          y: py,
-          opacity: 0,
-        },
-      }, () => {
-        this.state.layoutOpacity.setValue(0);
-        Animated.spring(
-          this.state.openVal,
-          { toValue: 1, ...SPRING_CONFIG }
-        ).start(() => this.setState({ isAnimating: false }));
-      });
-    });
+    Animated.spring(
+      this.state.openVal,
+      { toValue: 1, ...SPRING_CONFIG }
+    ).start(() => this.setState({ isAnimating: false }));
   },
 
   close: function() {
@@ -156,41 +105,42 @@ var Lightbox = React.createClass({
       this.state.openVal,
       { toValue: 0, ...SPRING_CONFIG }
     ).start(() => {
-      this.state.layoutOpacity.setValue(1);
+      this.props.onClose();
       // Delay isOpen until next tick to avoid flicker.
       setTimeout(() => {
         this.setState({
-          isOpen: false,
           isAnimating: false,
-        },
-          this.props.onClose
-        );
+        });
       });
     });
   },
 
+  componentWillReceiveProps: function(props) {
+    if(this.props.isOpen != props.isOpen) {
+      if(props.isOpen) {
+        this.open();
+      }
+    }
+  },
+
   render: function() {
     var {
-      header,
+      isOpen,
+      renderHeader,
       swipeToDismiss,
+      origin,
+      width,
+      height,
     } = this.props;
 
     var {
-      isOpen,
       isPanning,
       isAnimating,
-      layoutOpacity,
       openVal,
-      origin,
       target,
-      width,
-      height,
     } = this.state;
 
 
-    var layoutOpacityStyle = {
-      opacity: layoutOpacity,
-    };
     var lightboxOpacityStyle = {
       opacity: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.opacity, target.opacity]})
     };
@@ -209,51 +159,41 @@ var Lightbox = React.createClass({
     }
 
     var openStyle = [styles.open, {
-      left: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.x, target.x]}),
-      top: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.y, target.y]}),
-      width: openVal.interpolate({inputRange: [0, 1], outputRange: [width, WINDOW_WIDTH]}),
+      left:   openVal.interpolate({inputRange: [0, 1], outputRange: [origin.x, target.x]}),
+      top:    openVal.interpolate({inputRange: [0, 1], outputRange: [origin.y + STATUS_BAR_OFFSET, target.y + STATUS_BAR_OFFSET]}),
+      width:  openVal.interpolate({inputRange: [0, 1], outputRange: [width, WINDOW_WIDTH]}),
       height: openVal.interpolate({inputRange: [0, 1], outputRange: [height, WINDOW_HEIGHT]}),
     }];
 
-    if(!header) {
-      header = (
-        <TouchableOpacity onPress={this.toggle}>
+    var background = (<Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>);
+    var header = (<Animated.View style={[styles.header, lightboxOpacityStyle]}>{(renderHeader ?
+      renderHeader(this.close) :
+      (
+        <TouchableOpacity onPress={this.close}>
           <Text style={styles.closeButton}>×</Text>
         </TouchableOpacity>
+      )
+    )}</Animated.View>);
+    var content = (
+      <Animated.View style={[openStyle, dragStyle]} {...handlers}>
+        {this.props.children}
+      </Animated.View>
+    );
+    if(this.props.navigator) {
+      return (
+        <View>
+          {background}
+          {content}
+          {header}
+        </View>
       );
     }
-
-    var overlayContent = this.props.children;
-    if(this.props.activeProps) {
-      overlayContent = cloneElement(
-        Children.only(overlayContent),
-        this.props.activeProps
-      );
-    }
-
     return (
-      <View
-        ref={component => this._root = component}
-        style={this.props.style}
-      >
-        <Animated.View style={layoutOpacityStyle}>
-          <TouchableHighlight
-            underlayColor={this.props.underlayColor}
-            onPress={this.toggle}
-          >
-            {this.props.children}
-          </TouchableHighlight>
-        </Animated.View>
-        <Modal visible={this.state.isOpen} transparent={true}>
-          <Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>
-          <Animated.View style={[openStyle, dragStyle]} {...handlers}>
-            {overlayContent}
-          </Animated.View>
-          <Animated.View style={[styles.header, lightboxOpacityStyle]}>
-            {header}
-          </Animated.View>
-        </Modal>
-      </View>
+      <Modal visible={isOpen} transparent={true}>
+        {background}
+        {content}
+        {header}
+      </Modal>
     );
   }
 });
@@ -295,4 +235,4 @@ var styles = StyleSheet.create({
   },
 });
 
-module.exports = Lightbox;
+module.exports = LightboxOverlay;
