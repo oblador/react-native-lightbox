@@ -211,6 +211,8 @@ var styles = StyleSheet.create({
     position: 'absolute',
     flex: 1,
     justifyContent: 'center',
+    // Android pan handlers crash without this declaration:
+    backgroundColor: 'transparent',
   },
   header: {
     position: 'absolute',
