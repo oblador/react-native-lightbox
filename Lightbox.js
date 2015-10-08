@@ -14,10 +14,13 @@ var {
   Children,
   cloneElement,
 } = React;
+var TimerMixin = require('react-timer-mixin');
 
 var LightboxOverlay = require('./LightboxOverlay');
 
 var Lightbox = React.createClass({
+  mixins: [TimerMixin],
+
   propTypes: {
     activeProps:    PropTypes.object,
     renderHeader:   PropTypes.func,
@@ -102,7 +105,6 @@ var Lightbox = React.createClass({
           opacity: 0,
         },
       }, () => {
-        this.state.layoutOpacity.setValue(0);
         if(this.props.navigator) {
           var overlayContent = this.props.children;
           if(this.props.activeProps) {
@@ -123,6 +125,9 @@ var Lightbox = React.createClass({
             isOpen: true,
           });
         }
+        this.setTimeout(() => {
+          this.state.layoutOpacity.setValue(0);
+        });
       });
     });
   },
