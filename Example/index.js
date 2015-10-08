@@ -8,12 +8,13 @@ var React = require('react-native');
 var {
   AppRegistry,
   StyleSheet,
+  Navigator,
   ScrollView,
   Image,
   View,
   Text,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
 } = React;
 
 var Lightbox = require('react-native-lightbox');
@@ -21,12 +22,12 @@ var Lightbox = require('react-native-lightbox');
 var WINDOW_WIDTH = Dimensions.get('window').width;
 var BASE_PADDING = 10;
 
-var Example = React.createClass({
+var LightboxView = React.createClass({
   render: function() {
     return (
       <ScrollView style={styles.container}>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
-        <Lightbox underlayColor="white">
+        <Lightbox underlayColor="white" navigator={this.props.navigator}>
           <Image
             style={styles.contain}
             resizeMode="contain"
@@ -34,7 +35,7 @@ var Example = React.createClass({
           />
         </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
-        <Lightbox>
+        <Lightbox navigator={this.props.navigator}>
           <Image
             style={styles.cover}
             resizeMode="cover"
@@ -43,9 +44,9 @@ var Example = React.createClass({
         </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
         <Lightbox
-          ref="lightbox"
-          header={(
-            <TouchableOpacity onPress={() => this.refs.lightbox.close()}>
+          navigator={this.props.navigator}
+          renderHeader={close => (
+            <TouchableOpacity onPress={close}>
               <Text style={styles.closeButton}>Close</Text>
             </TouchableOpacity>
           )}>
@@ -55,7 +56,7 @@ var Example = React.createClass({
         </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
         <View style={styles.row}>
-          <Lightbox style={styles.col}>
+          <Lightbox style={styles.col} navigator={this.props.navigator}>
             <View style={[styles.square, styles.squareFirst]}><Text style={styles.squareText}>I'm a square</Text></View>
           </Lightbox>
           <Lightbox style={styles.col}>
@@ -69,7 +70,33 @@ var Example = React.createClass({
 });
 
 
+var Example = React.createClass({
+  renderScene: function(route, navigator) {
+    var Component = route.component;
+
+    return (
+      <Component navigator={navigator} route={route} {...route.passProps} />
+    );
+  },
+
+  render: function() {
+    return (
+      <Navigator
+        ref="navigator"
+        style={styles.navigator}
+        renderScene={this.renderScene}
+        initialRoute={{
+          component: LightboxView,
+        }}
+      />
+    );
+  }
+});
+
 var styles = StyleSheet.create({
+  navigator: {
+    flex: 1,
+  },
   container: {
     paddingHorizontal: BASE_PADDING,
   },
