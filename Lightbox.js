@@ -7,8 +7,6 @@ var React = require('react-native');
 var {
   PropTypes,
   View,
-  Text,
-  Dimensions,
   TouchableHighlight,
   Animated,
   Children,
@@ -54,15 +52,6 @@ var Lightbox = React.createClass({
       },
       layoutOpacity: new Animated.Value(1),
     };
-  },
-
-
-  toggle: function() {
-    if(this.state.isOpen) {
-      this.close();
-    } else {
-      this.open();
-    }
   },
 
   getOverlayProps: function() {
@@ -156,7 +145,7 @@ var Lightbox = React.createClass({
     if(!this.props.navigator) {
       var props = this.getOverlayProps();
       overlay = (
-        <LightboxOverlay ref="overlay" {...props} />
+        <LightboxOverlay {...props} />
       );
     }
 
@@ -170,7 +159,7 @@ var Lightbox = React.createClass({
         <Animated.View style={layoutOpacityStyle}>
           <TouchableHighlight
             underlayColor={this.props.underlayColor}
-            onPress={this.toggle}
+            onPress={this.open}
           >
             {this.props.children}
           </TouchableHighlight>
