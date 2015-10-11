@@ -86,7 +86,14 @@ var LightboxOverlay = React.createClass({
       StatusBarIOS.setHidden(true, 'fade');
     }
     this.state.pan.setValue(0);
-    this.setState({ isAnimating: true });
+    this.setState({
+      isAnimating: true,
+      target: {
+        x: 0,
+        y: 0,
+        opacity: 1,
+      }
+    });
 
     Animated.spring(
       this.state.openVal,
