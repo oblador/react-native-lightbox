@@ -18,11 +18,27 @@ var {
 } = React;
 
 var Lightbox = require('react-native-lightbox');
+var Carousel = require('react-native-looped-carousel');
 
 var WINDOW_WIDTH = Dimensions.get('window').width;
 var BASE_PADDING = 10;
 
 var LightboxView = React.createClass({
+  renderCarousel: function() {
+    return (
+      <Carousel style={{flex: 1}}>
+        <Image
+          style={{flex: 1}}
+          resizeMode="contain"
+          source={{ uri: 'http://cdn.lolwot.com/wp-content/uploads/2015/07/20-pictures-of-animals-in-hats-to-brighten-up-your-day-1.jpg' }}
+        />
+        <View style={{backgroundColor:'#6C7A89',flex: 1}}/>
+        <View style={{backgroundColor:'#019875',flex: 1}}/>
+        <View style={{backgroundColor:'#E67E22',flex: 1}}/>
+      </Carousel>
+    );
+  },
+
   render: function() {
     return (
       <ScrollView style={styles.container}>
@@ -35,10 +51,10 @@ var LightboxView = React.createClass({
           />
         </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
-        <Lightbox navigator={this.props.navigator}>
+        <Lightbox navigator={this.props.navigator} swipeToDismiss={false} renderContent={this.renderCarousel}>
           <Image
-            style={styles.cover}
-            resizeMode="cover"
+            style={styles.carousel}
+            resizeMode="contain"
             source={{ uri: 'http://cdn.lolwot.com/wp-content/uploads/2015/07/20-pictures-of-animals-in-hats-to-brighten-up-your-day-1.jpg' }}
           />
         </Lightbox>
@@ -140,9 +156,10 @@ var styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
-  cover: {
+  carousel: {
     height: 300,
     flex: 1,
+    backgroundColor: 'white',
   },
   contain: {
     flex: 1,
