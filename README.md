@@ -69,6 +69,7 @@ var MyApp = React.createClass({
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
 |**`swipeToDismiss`**|`bool`|Enables gestures to dismiss the fullscreen mode by swiping up or down, defaults to `true`.|
+|**`springConfig`**|`object`|[`Animated.spring`](https://facebook.github.io/react-native/docs/animations.html) configuration, defaults to `{ tension: 30, friction: 7 }`.|
 
 ## Demo
 

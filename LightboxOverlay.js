@@ -20,7 +20,6 @@ var {
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
-var SPRING_CONFIG = { tension: 30, friction: 7 };
 var DRAG_DISMISS_THRESHOLD = 150;
 var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 
@@ -31,6 +30,10 @@ var LightboxOverlay = React.createClass({
       y:        PropTypes.number,
       width:    PropTypes.number,
       height:   PropTypes.number,
+    }),
+    springConfig: PropTypes.shape({
+      tension:  PropTypes.number,
+      friction: PropTypes.number,
     }),
     isOpen:         PropTypes.bool,
     renderHeader:   PropTypes.func,
@@ -50,6 +53,12 @@ var LightboxOverlay = React.createClass({
       },
       pan: new Animated.Value(0),
       openVal: new Animated.Value(0),
+    };
+  },
+
+  getDefaultProps: function() {
+    return {
+      springConfig: { tension: 30, friction: 7 },
     };
   },
 
@@ -84,7 +93,7 @@ var LightboxOverlay = React.createClass({
         } else {
           Animated.spring(
             this.state.pan,
-            {toValue: 0, ...SPRING_CONFIG}
+            {toValue: 0, ...this.props.springConfig}
           ).start(() => { this.setState({ isPanning: false }); });
         }
       },
@@ -113,7 +122,7 @@ var LightboxOverlay = React.createClass({
 
     Animated.spring(
       this.state.openVal,
-      { toValue: 1, ...SPRING_CONFIG }
+      { toValue: 1, ...this.props.springConfig }
     ).start(() => this.setState({ isAnimating: false }));
   },
 
@@ -126,7 +135,7 @@ var LightboxOverlay = React.createClass({
     });
     Animated.spring(
       this.state.openVal,
-      { toValue: 0, ...SPRING_CONFIG }
+      { toValue: 0, ...this.props.springConfig }
     ).start(() => {
       this.props.onClose();
       this.setState({
