@@ -63,7 +63,8 @@ var MyApp = React.createClass({
 | Prop | Type | Description |
 |---|---|---|
 |**`activeProps`**|`object`|Optional set of props applied to the content component when in lightbox mode. Usable for applying custom styles or higher resolution image source.|
-|**`renderHeader(close)`**|`element`|Custom header instead of default with X button|
+|**`renderHeader(close)`**|`function`|Custom header instead of default with X button|
+|**`renderContent`**|`function`|Custom lightbox content instead of default child content|
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|

@@ -22,11 +22,13 @@ var Lightbox = React.createClass({
   propTypes: {
     activeProps:    PropTypes.object,
     renderHeader:   PropTypes.func,
+    renderContent:  PropTypes.func,
     underlayColor:  PropTypes.string,
     onOpen:         PropTypes.func,
     onClose:        PropTypes.func,
     swipeToDismiss: PropTypes.bool,
   },
+
   getDefaultProps: function() {
     return {
       swipeToDismiss: true,
@@ -38,38 +40,35 @@ var Lightbox = React.createClass({
   getInitialState: function() {
     return {
       isOpen: false,
-      width: 0,
-      height: 0,
-      target: {
-        x: 0,
-        y: 0,
-        opacity: 1,
-      },
       origin: {
         x: 0,
         y: 0,
-        opacity: 0,
+        width: 0,
+        height: 0,
       },
       layoutOpacity: new Animated.Value(1),
     };
   },
 
-  getOverlayProps: function() {
-    var overlayContent = this.props.children;
-    if(this.props.activeProps) {
-      overlayContent = cloneElement(
-        Children.only(overlayContent),
+  getContent: function() {
+    if(this.props.renderContent) {
+      return this.props.renderContent();
+    } else if(this.props.activeProps) {
+      return cloneElement(
+        Children.only(this.props.children),
         this.props.activeProps
       );
     }
+    return this.props.children;
+  },
+
+  getOverlayProps: function() {
     return {
       isOpen: this.state.isOpen,
-      width: this.state.width,
-      height: this.state.height,
       origin: this.state.origin,
       renderHeader: this.props.renderHeader,
       swipeToDismiss: this.props.swipeToDismiss,
-      children: overlayContent,
+      children: this.getContent(),
       onClose: this.onClose,
     };
   },
@@ -81,27 +80,14 @@ var Lightbox = React.createClass({
       this.setState({
         isOpen: (this.props.navigator ? true : false),
         isAnimating: true,
-        width,
-        height,
-        target: {
-          x: 0,
-          y: 0,
-          opacity: 1,
-        },
         origin: {
+          width,
+          height,
           x: px,
           y: py,
-          opacity: 0,
         },
       }, () => {
         if(this.props.navigator) {
-          var overlayContent = this.props.children;
-          if(this.props.activeProps) {
-            overlayContent = cloneElement(
-              Children.only(overlayContent),
-              this.props.activeProps
-            );
-          }
           var route = {
             component: LightboxOverlay,
             passProps: this.getOverlayProps(),
@@ -138,17 +124,6 @@ var Lightbox = React.createClass({
   },
 
   render: function() {
-    var layoutOpacityStyle = {
-      opacity: this.state.layoutOpacity,
-    };
-    var overlay;
-    if(!this.props.navigator) {
-      var props = this.getOverlayProps();
-      overlay = (
-        <LightboxOverlay {...props} />
-      );
-    }
-
     // measure will not return anything useful if we dont attach a onLayout handler on android
     return (
       <View
@@ -156,7 +131,7 @@ var Lightbox = React.createClass({
         style={this.props.style}
         onLayout={() => {}}
       >
-        <Animated.View style={layoutOpacityStyle}>
+        <Animated.View style={{opacity: this.state.layoutOpacity}}>
           <TouchableHighlight
             underlayColor={this.props.underlayColor}
             onPress={this.open}
@@ -164,7 +139,7 @@ var Lightbox = React.createClass({
             {this.props.children}
           </TouchableHighlight>
         </Animated.View>
-        {overlay}
+        {this.props.navigator ? false : <LightboxOverlay {...this.getOverlayProps()} />}
       </View>
     );
   }

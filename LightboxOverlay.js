@@ -25,6 +25,20 @@ var DRAG_DISMISS_THRESHOLD = 150;
 var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 
 var LightboxOverlay = React.createClass({
+  propTypes: {
+    origin: PropTypes.shape({
+      x:        PropTypes.number,
+      y:        PropTypes.number,
+      width:    PropTypes.number,
+      height:   PropTypes.number,
+    }),
+    isOpen:         PropTypes.bool,
+    renderHeader:   PropTypes.func,
+    onOpen:         PropTypes.func,
+    onClose:        PropTypes.func,
+    swipeToDismiss: PropTypes.bool,
+  },
+
   getInitialState: function() {
     return {
       isAnimating: false,
@@ -36,7 +50,6 @@ var LightboxOverlay = React.createClass({
       },
       pan: new Animated.Value(0),
       openVal: new Animated.Value(0),
-      layoutOpacity: new Animated.Value(1),
     };
   },
 
@@ -76,6 +89,9 @@ var LightboxOverlay = React.createClass({
         }
       },
     });
+  },
+
+  componentDidMount: function() {
     if(this.props.isOpen) {
       this.open();
     }
@@ -120,10 +136,8 @@ var LightboxOverlay = React.createClass({
   },
 
   componentWillReceiveProps: function(props) {
-    if(this.props.isOpen != props.isOpen) {
-      if(props.isOpen) {
-        this.open();
-      }
+    if(this.props.isOpen != props.isOpen && props.isOpen) {
+      this.open();
     }
   },
 
@@ -133,8 +147,6 @@ var LightboxOverlay = React.createClass({
       renderHeader,
       swipeToDismiss,
       origin,
-      width,
-      height,
     } = this.props;
 
     var {
@@ -146,7 +158,7 @@ var LightboxOverlay = React.createClass({
 
 
     var lightboxOpacityStyle = {
-      opacity: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.opacity, target.opacity]})
+      opacity: openVal.interpolate({inputRange: [0, 1], outputRange: [0, target.opacity]})
     };
 
     var handlers;
@@ -165,8 +177,8 @@ var LightboxOverlay = React.createClass({
     var openStyle = [styles.open, {
       left:   openVal.interpolate({inputRange: [0, 1], outputRange: [origin.x, target.x]}),
       top:    openVal.interpolate({inputRange: [0, 1], outputRange: [origin.y + STATUS_BAR_OFFSET, target.y + STATUS_BAR_OFFSET]}),
-      width:  openVal.interpolate({inputRange: [0, 1], outputRange: [width, WINDOW_WIDTH]}),
-      height: openVal.interpolate({inputRange: [0, 1], outputRange: [height, WINDOW_HEIGHT]}),
+      width:  openVal.interpolate({inputRange: [0, 1], outputRange: [origin.width, WINDOW_WIDTH]}),
+      height: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.height, WINDOW_HEIGHT]}),
     }];
 
     var background = (<Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>);
