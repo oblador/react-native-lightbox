@@ -113,11 +113,8 @@ var LightboxOverlay = React.createClass({
       { toValue: 0, ...SPRING_CONFIG }
     ).start(() => {
       this.props.onClose();
-      // Delay isOpen until next tick to avoid flicker.
-      setTimeout(() => {
-        this.setState({
-          isAnimating: false,
-        });
+      this.setState({
+        isAnimating: false,
       });
     });
   },
