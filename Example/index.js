@@ -51,7 +51,7 @@ var LightboxView = React.createClass({
           />
         </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
-        <Lightbox navigator={this.props.navigator} swipeToDismiss={false} renderContent={this.renderCarousel}>
+        <Lightbox navigator={this.props.navigator} springConfig={{tension: 15, friction: 7}} swipeToDismiss={false} renderContent={this.renderCarousel}>
           <Image
             style={styles.carousel}
             resizeMode="contain"
