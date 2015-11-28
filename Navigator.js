@@ -30,7 +30,7 @@ var LightboxNavigator = React.createClass({
     var scene;
     if(route.type === 'LightboxImage') {
       var Component = route.component;
-      scene = (<Component route={route} navigator={navigator} {...route.passProps}>{route.children}</Component>);
+      scene = (<Component route={route} navigator={navigator} {...route.passProps}>{route.passProps.children}</Component>);
     } else {
       scene = this.props.renderScene(route, this);
     }

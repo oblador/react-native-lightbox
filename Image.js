@@ -10,6 +10,7 @@ var {
   PropTypes,
   Image,
   View,
+  ScrollView,
   TouchableHighlight,
   Animated,
   Children,
@@ -41,12 +42,16 @@ var Lightbox = React.createClass({
     hidesStatusBar:     PropTypes.bool,
     lightboxResizeMode: PropTypes.oneOf(['none', 'stretch', 'contain', 'cover']),
     imageComponent:     PropTypes.func,
+    maximumZoomScale:   PropTypes.number,
+    minimumZoomScale:   PropTypes.number,
     touchableComponent: PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
       hidesStatusBar: true,
+      maximumZoomScale: 1,
+      minimumZoomScale: 1,
       imageComponent: Image,
       touchableComponent: TouchableHighlight,
       routeProps: {
@@ -82,7 +87,7 @@ var Lightbox = React.createClass({
       var route = {
         type: 'LightboxImage',
         component: Animated.createAnimatedComponent(this.props.imageComponent),
-        passProps: { ...this._getImageProps(), ...this.props.activeProps },
+        passProps: { children: this.props.children, ...this._getImageProps(), ...this.props.activeProps },
         transitionProps: {
           ...transitionProps,
           resizeMode: this.props.lightboxResizeMode || 'none',
@@ -112,6 +117,19 @@ var Lightbox = React.createClass({
           },
         },
       };
+      if(this.props.minimumZoomScale !== this.props.maximumZoomScale) {
+        var Component = route.component;
+        var image = (<Component {...route.passProps} />);
+        route.transitionProps.originElement = image;
+        route.component = Animated.createAnimatedComponent(ScrollView);
+        route.passProps = {
+          style: { flex: 1 },
+          contentContainerStyle: { flex: 1 },
+          automaticallyAdjustContentInsets: false,
+          ...pick(this.props, ['maximumZoomScale', 'minimumZoomScale']),
+          children: image,
+        };
+      }
       this.props.navigator.push(route);
     });
   },
