@@ -20,6 +20,7 @@ var {
 
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
+var DRAG_DISMISS_THRESHOLD = 120;
 
 var LightboxOverlay = require('./Overlay');
 var LightboxHeader = require('./Header');
@@ -44,11 +45,13 @@ var Lightbox = React.createClass({
     imageComponent:     PropTypes.func,
     maximumZoomScale:   PropTypes.number,
     minimumZoomScale:   PropTypes.number,
+    swipeToDismiss:     PropTypes.bool,
     touchableComponent: PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
+      swipeToDismiss: true,
       hidesStatusBar: true,
       maximumZoomScale: 1,
       minimumZoomScale: 1,
@@ -117,18 +120,33 @@ var Lightbox = React.createClass({
           },
         },
       };
-      if(this.props.minimumZoomScale !== this.props.maximumZoomScale) {
+      if(this.props.swipeToDismiss || this.props.minimumZoomScale !== this.props.maximumZoomScale) {
         var Component = route.component;
         var image = (<Component {...route.passProps} />);
         route.transitionProps.originElement = image;
         route.component = Animated.createAnimatedComponent(ScrollView);
         route.passProps = {
+          ref: component => this._scrollView = component,
           style: { flex: 1 },
           contentContainerStyle: { flex: 1 },
           automaticallyAdjustContentInsets: false,
           ...pick(this.props, ['maximumZoomScale', 'minimumZoomScale']),
           children: image,
         };
+        if(this.props.swipeToDismiss) {
+          route.passProps.alwaysBounceVertical = true;
+          route.passProps.onScrollEndDrag = event => {
+            if(event.nativeEvent.contentOffset.y + event.nativeEvent.contentInset.top <= -DRAG_DISMISS_THRESHOLD || event.nativeEvent.contentSize.height - event.nativeEvent.layoutMeasurement.height - event.nativeEvent.contentOffset.y <= -DRAG_DISMISS_THRESHOLD) {
+              if(this._scrollView) {
+                // Disable bouncing for better closing animation performance
+                this._scrollView.setNativeProps({
+                  bounces: false,
+                });
+              }
+              this.props.navigator.pop();
+            }
+          };
+        }
       }
       this.props.navigator.push(route);
     });
