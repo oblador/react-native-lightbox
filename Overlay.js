@@ -91,6 +91,20 @@ var LightboxOverlay = React.createClass({
     };
   },
 
+  componentWillMount: function() {
+    this._originElementSubscription = this.props.navigator.navigationContext.addListener('originElementChanged', event => {
+      if(event.data.route === this.props.route) {
+        this.setState({
+          originElement: event.data.originElement
+        });
+      }
+    });
+  },
+
+  componentWillUnmount: function() {
+    this._originElementSubscription.remove();
+  },
+
   _isContentRendered: false,
   contentDidLayout: function() {
     if(!this._isContentRendered && this.props.isOpen) {
@@ -166,7 +180,6 @@ var LightboxOverlay = React.createClass({
       renderFooter,
       origin,
       resizeMode,
-      originElement,
     } = this.props;
 
     var {
@@ -175,6 +188,8 @@ var LightboxOverlay = React.createClass({
       openVal,
       target,
     } = this.state;
+
+    var originElement = this.state.originElement || this.props.originElement;
 
     var openStyle = [styles.open];
     if(resizeMode !== 'none') {

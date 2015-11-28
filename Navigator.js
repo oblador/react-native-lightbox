@@ -48,6 +48,8 @@ var LightboxNavigator = React.createClass({
           <TransitionComponent
             {...transitionProps}
             ref={component => this._transitionViews[stackIndex] = component}
+            navigator={navigator}
+            route={route}
             onOpeningTransitionStart={() => {
               this._routeWillFocus(route);
               if(transitionProps.onOpeningTransitionStart) {
