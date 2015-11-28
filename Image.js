@@ -121,12 +121,9 @@ var Lightbox = React.createClass({
       };
       if(this.props.swipeToDismiss || this.props.minimumZoomScale !== this.props.maximumZoomScale) {
         var Component = route.component;
-        var children = [];
         var sources = Array.isArray(this.props.source) ? this.props.source : [this.props.source];
         var isGallery = sources.length > 1;
-        for(var i = 0; i < this.props.source.length; i++) {
-          children.push((<Component {...route.passProps} key={i} source={this.props.source[i]} />));
-        }
+        var children = sources.map((source, i) => (<Component {...route.passProps} key={i} source={source} />));
         route.component = Animated.createAnimatedComponent(ScrollView);
         route.transitionProps.originElement = children[this.state.sourceIndex];
         route.passProps = {
