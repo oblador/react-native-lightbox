@@ -72,6 +72,7 @@ var Lightbox = React.createClass({
         height: 0,
       },
       layoutOpacity: new Animated.Value(1),
+      sourceIndex: 0,
     };
   },
 
@@ -119,27 +120,38 @@ var Lightbox = React.createClass({
       };
       if(this.props.swipeToDismiss || this.props.minimumZoomScale !== this.props.maximumZoomScale) {
         var Component = route.component;
-        var image = (<Component {...route.passProps} />);
-        var children = [image];
-        var isGallery = Array.isArray(this.props.source) && this.props.source.length > 1;
-        if(isGallery) {
-          for(var i = 1; i < this.props.source.length; i++) {
-            children.push((<Component {...route.passProps} source={this.props.source[i]} />));
-          }
+        var children = [];
+        var sources = Array.isArray(this.props.source) ? this.props.source : [this.props.source];
+        var isGallery = sources.length > 1;
+        for(var i = 0; i < this.props.source.length; i++) {
+          children.push((<Component {...route.passProps} key={i} source={this.props.source[i]} />));
         }
-        route.transitionProps.originElement = image;
         route.component = Animated.createAnimatedComponent(ScrollView);
+        route.transitionProps.originElement = children[this.state.sourceIndex];
         route.passProps = {
           ref: component => this._scrollView = component,
-          style: { flex: 1 },
           directionalLockEnabled: true,
           horizontal: isGallery,
           pagingEnabled: isGallery,
-          contentContainerStyle: { width: DEVICE_WIDTH * children.length, height: DEVICE_HEIGHT },
+          contentContainerStyle: { flex: 1, width: DEVICE_WIDTH * children.length },
           automaticallyAdjustContentInsets: false,
           ...pick(this.props, ['maximumZoomScale', 'minimumZoomScale']),
           children,
         };
+        if(isGallery) {
+          route.passProps.contentOffset = { x: DEVICE_WIDTH * this.state.sourceIndex };
+          route.passProps.scrollEventThrottle = 16;
+          route.passProps.onScroll = event => {
+            var sourceIndex = Math.round(event.nativeEvent.contentOffset.x / DEVICE_WIDTH);
+            if(sourceIndex !== this.state.sourceIndex) {
+              this.setState({ sourceIndex });
+            }
+            this.props.navigator.navigationContext.emit('originElementChanged', {
+              originElement: children[sourceIndex],
+              route: route,
+            })
+          };
+        }
         if(this.props.swipeToDismiss) {
           route.passProps.alwaysBounceVertical = true;
           route.passProps.onScrollEndDrag = event => {
@@ -191,7 +203,7 @@ var Lightbox = React.createClass({
   _getImageProps: function() {
     var props = pick(this.props, Object.keys(this.props.imageComponent.propTypes));
     if(Array.isArray(props.source)) {
-      props.source = props.source[0];
+      props.source = props.source[this.state.sourceIndex];
     }
     return props;
   },
