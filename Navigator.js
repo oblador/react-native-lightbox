@@ -84,14 +84,12 @@ var LightboxNavigator = React.createClass({
     var routes = this._root.getCurrentRoutes();
     routes.push(route);
     this._root.immediatelyResetRouteStack(routes);
-    this._root._emitDidFocus(route);
   },
 
   _immediatelyPop: function() {
     var routes = this._root.getCurrentRoutes();
     routes.pop();
     this._root.immediatelyResetRouteStack(routes);
-    this._root._emitDidFocus(routes[routes.length-1]);
   },
 
   push: function(route) {
