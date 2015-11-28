@@ -33,6 +33,7 @@
     "react-native": ">=0.11.0 || 0.11.0-rc || 0.12.0-rc || 0.13.0-rc"
   },
   "dependencies": {
+    "react-native-clone-referenced-element": "^1.0.0",
     "react-timer-mixin": "^0.13.3"
   }
 }
