@@ -17,24 +17,52 @@ var LightboxNavigator = React.createClass({
     this.__defineGetter__('navigationContext', this._root._getNavigationContext);
   },
 
+  _configureSceneProxy: function(route) {
+    if(route.type === 'LightboxImage') {
+      return SceneConfigs.Lightbox;
+    } else if(this.props.configureScene) {
+      return this.props.configureScene(route);
+    }
+    return SceneConfigs.PushFromRight;
+  },
+
   _renderSceneProxy: function(route, navigator) {
-    var scene = this.props.renderScene(route, this);
+    var scene;
+    if(route.type === 'LightboxImage') {
+      var Component = route.component;
+      scene = (<Component route={route} navigator={navigator} {...route.passProps}>{route.children}</Component>);
+    } else {
+      scene = this.props.renderScene(route, this);
+    }
     if(this._root && this._root.state) {
       var stackIndex = this._root.state.routeStack.indexOf(route);
       var sceneConfig = this._root.state.sceneConfigStack[stackIndex];
 
       if(sceneConfig.transitionComponent) {
-        var Component = sceneConfig.transitionComponent;
+        var TransitionComponent = sceneConfig.transitionComponent;
+        var transitionProps = {
+          ...sceneConfig.transitionProps,
+          ...route.transitionProps,
+        };
         return (
-          <Component
+          <TransitionComponent
+            {...transitionProps}
             ref={component => this._transitionViews[stackIndex] = component}
-            onOpeningTransitionStart={() => this._routeWillFocus(route)}
-            onOpeningTransitionEnd={() => this._routeDidFocus(route)}
-            {...sceneConfig.transitionProps}
-            {...route.transitionProps}
+            onOpeningTransitionStart={() => {
+              this._routeWillFocus(route);
+              if(transitionProps.onOpeningTransitionStart) {
+                transitionProps.onOpeningTransitionStart();
+              }
+            }}
+            onOpeningTransitionEnd={() => {
+              this._routeDidFocus(route);
+              if(transitionProps.onOpeningTransitionEnd) {
+                transitionProps.onOpeningTransitionEnd();
+              }
+            }}
           >
             {scene}
-          </Component>
+          </TransitionComponent>
         );
       }
     }
@@ -92,7 +120,7 @@ var LightboxNavigator = React.createClass({
   },
 
   render: function() {
-    var { children, ref, renderScene, sceneStyle, ...props } = this.props;
+    var { children, ref, renderScene, configureScene, sceneStyle, ...props } = this.props;
     return (
       <Navigator
         ref={component => {
@@ -102,6 +130,7 @@ var LightboxNavigator = React.createClass({
           }
         }}
         renderScene={this._renderSceneProxy}
+        configureScene={this._configureSceneProxy}
         {...props}
         >
         {children}
@@ -110,8 +139,15 @@ var LightboxNavigator = React.createClass({
   },
 });
 
+var LightboxOverlay = require('./Overlay');
+
 var SceneConfigs = {
   ...Navigator.SceneConfigs,
+  Lightbox: {
+    ...Navigator.SceneConfigs.PushFromRight,
+    transitionComponent: LightboxOverlay,
+    gestures: {},
+  },
 };
 
 module.exports = LightboxNavigator;

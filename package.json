@@ -2,7 +2,7 @@
   "name": "react-native-lightbox",
   "version": "0.5.0",
   "description": "Images etc in Full Screen Lightbox Popovers for React Native",
-  "main": "Lightbox.js",
+  "main": "index.js",
   "scripts": {
     "test": "flow check"
   },
@@ -33,7 +33,7 @@
     "react-native": ">=0.11.0 || 0.11.0-rc || 0.12.0-rc || 0.13.0-rc"
   },
   "dependencies": {
-    "react-native-clone-referenced-element": "^1.0.0",
-    "react-timer-mixin": "^0.13.3"
+    "lodash": "^3.10.1",
+    "react-native-clone-referenced-element": "^1.0.0"
   }
 }
