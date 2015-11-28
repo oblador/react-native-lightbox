@@ -33,6 +33,7 @@ var Lightbox = React.createClass({
     underlayColor:      PropTypes.string,
     onOpen:             PropTypes.func,
     onClose:            PropTypes.func,
+    onSourceChange:     PropTypes.func,
     springConfig:       PropTypes.shape({
       tension:          PropTypes.number,
       friction:         PropTypes.number,
@@ -150,6 +151,9 @@ var Lightbox = React.createClass({
               originElement: children[sourceIndex],
               route: route,
             })
+            if(this.props.onSourceChange) {
+              this.props.onSourceChange(this.props.source[sourceIndex], sourceIndex);
+            }
           };
         }
         if(this.props.swipeToDismiss) {
