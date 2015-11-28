@@ -1,6 +1,3 @@
-/**
- * @providesModule Lightbox
- */
 'use strict';
 
 var pick = require('lodash/object/pick');
@@ -123,15 +120,25 @@ var Lightbox = React.createClass({
       if(this.props.swipeToDismiss || this.props.minimumZoomScale !== this.props.maximumZoomScale) {
         var Component = route.component;
         var image = (<Component {...route.passProps} />);
+        var children = [image];
+        var isGallery = Array.isArray(this.props.source) && this.props.source.length > 1;
+        if(isGallery) {
+          for(var i = 1; i < this.props.source.length; i++) {
+            children.push((<Component {...route.passProps} source={this.props.source[i]} />));
+          }
+        }
         route.transitionProps.originElement = image;
         route.component = Animated.createAnimatedComponent(ScrollView);
         route.passProps = {
           ref: component => this._scrollView = component,
           style: { flex: 1 },
-          contentContainerStyle: { flex: 1 },
+          directionalLockEnabled: true,
+          horizontal: isGallery,
+          pagingEnabled: isGallery,
+          contentContainerStyle: { width: DEVICE_WIDTH * children.length, height: DEVICE_HEIGHT },
           automaticallyAdjustContentInsets: false,
           ...pick(this.props, ['maximumZoomScale', 'minimumZoomScale']),
-          children: image,
+          children,
         };
         if(this.props.swipeToDismiss) {
           route.passProps.alwaysBounceVertical = true;
@@ -182,7 +189,11 @@ var Lightbox = React.createClass({
   },
 
   _getImageProps: function() {
-    return pick(this.props, Object.keys(this.props.imageComponent.propTypes));
+    var props = pick(this.props, Object.keys(this.props.imageComponent.propTypes));
+    if(Array.isArray(props.source)) {
+      props.source = props.source[0];
+    }
+    return props;
   },
 
   _getTouchableProps: function() {
