@@ -29,6 +29,8 @@ var LightboxOverlay = React.createClass({
     onClosingTransitionStart: PropTypes.func,
     onClosingTransitionEnd:   PropTypes.func,
 
+    hidesContentDuringTransition: PropTypes.bool,
+
     renderHeader: PropTypes.func,
     renderFooter: PropTypes.func,
     renderBackground: PropTypes.func,
@@ -87,6 +89,7 @@ var LightboxOverlay = React.createClass({
         height: DEVICE_HEIGHT,
       },
       isOpen: true,
+      hidesContentDuringTransition: true,
       resizeMode: 'none',
     };
   },
@@ -180,6 +183,7 @@ var LightboxOverlay = React.createClass({
       renderFooter,
       origin,
       resizeMode,
+      hidesContentDuringTransition,
     } = this.props;
 
     var {
@@ -240,7 +244,7 @@ var LightboxOverlay = React.createClass({
         style={[
           preview ? {
             flex: 1,
-            opacity: !this._isContentRendered || isAnimating ? 0 : 1
+            opacity: hidesContentDuringTransition && (!this._isContentRendered || isAnimating) ? 0 : 1
           } : openStyle
         ]}
       >{this.props.children}</Animated.View>
