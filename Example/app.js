@@ -17,12 +17,14 @@ var {
   Dimensions,
   TouchableHighlight,
   TouchableOpacity,
+  Platform,
 } = React;
 
 var Lightbox = require('react-native-lightbox');
 
 var WINDOW_WIDTH = Dimensions.get('window').width;
 var WINDOW_HEIGHT = Dimensions.get('window').height;
+var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? 25 : 0);
 var BASE_PADDING = 10;
 
 var IMAGES = {
@@ -37,7 +39,7 @@ var RootView = React.createClass({
         width,
         height,
         x: px,
-        y: py,
+        y: py - STATUS_BAR_OFFSET,
       };
       var target = {
         width: WINDOW_WIDTH,

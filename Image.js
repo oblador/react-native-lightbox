@@ -13,11 +13,13 @@ var {
   Children,
   Dimensions,
   StatusBarIOS,
+  Platform,
 } = React;
 
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
 var DRAG_DISMISS_THRESHOLD = 120;
+var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? 25 : 0);
 
 var LightboxOverlay = require('./Overlay');
 var LightboxHeader = require('./Header');
@@ -83,7 +85,7 @@ var Lightbox = React.createClass({
         width,
         height,
         x: px,
-        y: py,
+        y: py - STATUS_BAR_OFFSET,
       }
       var transitionProps = pick(this.props, Object.keys(LightboxOverlay.propTypes));
       var route = {

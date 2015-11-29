@@ -12,6 +12,7 @@ var {
   TouchableOpacity,
   Children,
   InteractionManager,
+  Platform,
 } = React;
 
 var cloneElement = require('react-native-clone-referenced-element');
@@ -19,6 +20,7 @@ var cloneElement = require('react-native-clone-referenced-element');
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
 var DRAG_DISMISS_THRESHOLD = 150;
+var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? 25 : 0);
 
 var noop = function() {};
 
@@ -86,7 +88,7 @@ var LightboxOverlay = React.createClass({
         x: 0,
         y: 0,
         width: DEVICE_WIDTH,
-        height: DEVICE_HEIGHT,
+        height: DEVICE_HEIGHT-STATUS_BAR_OFFSET,
       },
       isOpen: true,
       hidesContentDuringTransition: true,
