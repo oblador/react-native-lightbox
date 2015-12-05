@@ -115,7 +115,6 @@ var LightboxOverlay = React.createClass({
   onAndroidBack: function() {
     if(Platform.OS === 'android') {
       if(this.props.isOpen) {
-        BackAndroid.removeEventListener('hardwareBackPress', this.onAndroidBack);
         this.close();
         return true;
       }
@@ -151,6 +150,9 @@ var LightboxOverlay = React.createClass({
   close: function() {
     if(StatusBarIOS) {
       StatusBarIOS.setHidden(false, 'fade');
+    }
+    if(Platform.OS === 'android') {
+      BackAndroid.removeEventListener('hardwareBackPress', this.onAndroidBack);
     }
     this.setState({
       isAnimating: true,
