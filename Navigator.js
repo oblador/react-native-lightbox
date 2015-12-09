@@ -51,13 +51,13 @@ var LightboxNavigator = React.createClass({
             navigator={navigator}
             route={route}
             onOpeningTransitionStart={() => {
-              this._routeWillFocus(route);
+              this._routeWillFocus(route, transitionProps);
               if(transitionProps.onOpeningTransitionStart) {
                 transitionProps.onOpeningTransitionStart();
               }
             }}
             onOpeningTransitionEnd={() => {
-              this._routeDidFocus(route);
+              this._routeDidFocus(route, transitionProps);
               if(transitionProps.onOpeningTransitionEnd) {
                 transitionProps.onOpeningTransitionEnd();
               }
@@ -71,13 +71,15 @@ var LightboxNavigator = React.createClass({
     return scene;
   },
 
-  _routeWillFocus: function(route) {
+  _routeWillFocus: function(route, transitionProps) {
     this._root._emitWillFocus(route);
   },
 
-  _routeDidFocus: function(route) {
+  _routeDidFocus: function(route, transitionProps) {
     this._root._emitDidFocus(route);
-    this._root._hideScenes();
+    if(transitionProps.hidesPreviousSceneAfterTransition !== false) {
+      this._root._hideScenes();
+    }
   },
 
   _immediatelyPush: function(route) {
