@@ -85,13 +85,13 @@ var LightboxNavigator = React.createClass({
   _immediatelyPush: function(route) {
     var routes = this._root.getCurrentRoutes();
     routes.push(route);
-    this._root.immediatelyResetRouteStack(routes);
+    this.immediatelyResetRouteStack(routes);
   },
 
   _immediatelyPop: function() {
     var routes = this._root.getCurrentRoutes();
     routes.pop();
-    this._root.immediatelyResetRouteStack(routes);
+    this.immediatelyResetRouteStack(routes);
   },
 
   push: function(route) {
@@ -131,6 +131,10 @@ var LightboxNavigator = React.createClass({
 
   replacePrevious: function(route) {
     return this._root.replacePrevious(route);
+  },
+
+  immediatelyResetRouteStack: function(routeStack) {
+    return this._root.immediatelyResetRouteStack(routeStack);
   },
 
   render: function() {
