@@ -121,6 +121,18 @@ var LightboxNavigator = React.createClass({
     }
   },
 
+  replace: function(route) {
+    return this._root.replace(route);
+  },
+
+  replaceAtIndex: function(route, index) {
+    return this._root.replaceAtIndex(route, index);
+  },
+
+  replacePrevious: function(route) {
+    return this._root.replacePrevious(route);
+  },
+
   render: function() {
     var { children, ref, renderScene, configureScene, sceneStyle, ...props } = this.props;
     return (
