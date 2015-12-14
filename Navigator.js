@@ -137,6 +137,10 @@ var LightboxNavigator = React.createClass({
     return this._root.immediatelyResetRouteStack(routeStack);
   },
 
+  getCurrentRoutes: function() {
+    return this._root.getCurrentRoutes();
+  },
+
   render: function() {
     var { children, ref, renderScene, configureScene, sceneStyle, ...props } = this.props;
     return (
