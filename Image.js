@@ -23,6 +23,7 @@ var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? 25 : 0);
 
 var LightboxOverlay = require('./Overlay');
 var LightboxHeader = require('./Header');
+var ZoomableImage = require('./ZoomableImage');
 
 var Lightbox = React.createClass({
   propTypes: {
@@ -61,7 +62,7 @@ var Lightbox = React.createClass({
         name: 'lightbox-image',
       },
       activeProps: {
-        style: { flex: 1 },
+        style: {}
       }
     };
   },
@@ -87,11 +88,23 @@ var Lightbox = React.createClass({
         x: px,
         y: py - STATUS_BAR_OFFSET,
       }
+      var ImageComponent = this.props.imageComponent;
+      var AnimatedImage = Animated.createAnimatedComponent(ImageComponent);
       var transitionProps = pick(this.props, Object.keys(LightboxOverlay.propTypes));
+
+      var sources = Array.isArray(this.props.source) ? this.props.source : [this.props.source];
+      var isGallery = sources.length > 1;
+      var isZoomable = this.props.minimumZoomScale !== this.props.maximumZoomScale;
+      var children = this.props.children;
+      var imageProps = { ...this._getImageProps(), ...this.props.activeProps };
+
       var route = {
         type: 'LightboxImage',
-        component: Animated.createAnimatedComponent(this.props.imageComponent),
-        passProps: { children: this.props.children, ...this._getImageProps(), ...this.props.activeProps },
+        component: ImageComponent,
+        passProps: {
+          children: children,
+          ...imageProps,
+        },
         transitionProps: {
           ...transitionProps,
           resizeMode: this.props.lightboxResizeMode || 'none',
@@ -121,43 +134,70 @@ var Lightbox = React.createClass({
           },
         },
       };
-      if(this.props.swipeToDismiss || this.props.minimumZoomScale !== this.props.maximumZoomScale) {
-        var Component = route.component;
-        var sources = Array.isArray(this.props.source) ? this.props.source : [this.props.source];
-        var isGallery = sources.length > 1;
-        var children = sources.map((source, i) => (<Component {...route.passProps} key={i} source={source} />));
-        route.component = Animated.createAnimatedComponent(ScrollView);
-        route.transitionProps.originElement = children[this.state.sourceIndex];
+
+      if(isZoomable || isGallery) {
+        route.component = View;
         route.passProps = {
+          style: { flex: 1 },
+          children: sources.map((source, i) => (
+            <ZoomableImage
+              {...imageProps}
+              key={i}
+              source={source}
+              minimumZoomScale={this.props.minimumZoomScale}
+              maximumZoomScale={this.props.maximumZoomScale}
+              imageComponent={ImageComponent}
+            />
+          ))
+        };
+        route.transitionProps.originElement = (<AnimatedImage {...imageProps} source={sources[this.state.sourceIndex]} />);
+      }
+
+      if(this.props.swipeToDismiss || isGallery) {
+        route.component = ScrollView;
+        route.passProps = {
+          ...route.passProps,
           ref: component => this._scrollView = component,
           directionalLockEnabled: true,
-          horizontal: isGallery,
-          pagingEnabled: isGallery,
-          contentContainerStyle: { flex: 1, width: DEVICE_WIDTH * children.length },
           automaticallyAdjustContentInsets: false,
-          ...pick(this.props, ['maximumZoomScale', 'minimumZoomScale']),
-          children,
+          contentContainerStyle: { flex: 1 },
         };
-        if(isGallery) {
-          route.passProps.contentOffset = { x: DEVICE_WIDTH * this.state.sourceIndex };
-          route.passProps.scrollEventThrottle = 16;
-          route.passProps.onScroll = event => {
+        if(!isGallery && !isZoomable) {
+          route.passProps.children = (<ImageComponent {...imageProps} />);
+        }
+      }
+
+      if(isGallery) {
+        route.passProps = {
+          ...route.passProps,
+          horizontal: true,
+          pagingEnabled: true,
+          contentOffset: { x: DEVICE_WIDTH * this.state.sourceIndex },
+          contentContainerStyle: { flex: 1, width: DEVICE_WIDTH * sources.length },
+          scrollEventThrottle: 16,
+          onScroll: event => {
             var sourceIndex = Math.round(event.nativeEvent.contentOffset.x / DEVICE_WIDTH);
             if(sourceIndex !== this.state.sourceIndex) {
               this.setState({ sourceIndex });
+
+              this.props.navigator.navigationContext.emit('originElementChanged', {
+                originElement: (<AnimatedImage {...imageProps} source={sources[this.state.sourceIndex]} />),
+                route: route,
+              });
+
+              if(this.props.onSourceChange) {
+                this.props.onSourceChange(this.props.source[sourceIndex], sourceIndex);
+              }
             }
-            this.props.navigator.navigationContext.emit('originElementChanged', {
-              originElement: children[sourceIndex],
-              route: route,
-            })
-            if(this.props.onSourceChange) {
-              this.props.onSourceChange(this.props.source[sourceIndex], sourceIndex);
-            }
-          };
-        }
-        if(this.props.swipeToDismiss) {
-          route.passProps.alwaysBounceVertical = true;
-          route.passProps.onScrollEndDrag = event => {
+          }
+        };
+      }
+
+      if(this.props.swipeToDismiss) {
+        route.passProps = {
+          ...route.passProps,
+          alwaysBounceVertical: true,
+          onScrollEndDrag: event => {
             if(event.nativeEvent.contentOffset.y + event.nativeEvent.contentInset.top <= -DRAG_DISMISS_THRESHOLD || event.nativeEvent.contentSize.height - event.nativeEvent.layoutMeasurement.height - event.nativeEvent.contentOffset.y <= -DRAG_DISMISS_THRESHOLD) {
               if(this._scrollView) {
                 // Disable bouncing for better closing animation performance
@@ -167,9 +207,10 @@ var Lightbox = React.createClass({
               }
               this.props.navigator.pop();
             }
-          };
-        }
+          }
+        };
       }
+
       this.props.navigator.push(route);
     });
   },
@@ -204,6 +245,8 @@ var Lightbox = React.createClass({
   },
 
   _getImageProps: function() {
+    // TODO: As of RN 0.16/17? all core components includes all View props in propTypes
+    // so this approach is not good anymore.
     var props = pick(this.props, Object.keys(this.props.imageComponent.propTypes));
     if(Array.isArray(props.source)) {
       props.source = props.source[this.state.sourceIndex];

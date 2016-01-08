@@ -80,7 +80,7 @@ var RootView = React.createClass({
           lightboxResizeMode="none"
           navigator={this.props.navigator}
           style={styles.contain}
-          activeProps={{ resizeMode: 'contain', style: { flex: 1 }}}
+          maximumZoomScale={2}
           source={[IMAGES.partyPig, IMAGES.hatHampster]}
           />
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
