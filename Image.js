@@ -50,6 +50,8 @@ var Lightbox = React.createClass({
     touchableComponent: PropTypes.func,
   },
 
+  _offsetY: 0,
+
   getDefaultProps: function() {
     return {
       swipeToDismiss: true,
@@ -112,6 +114,7 @@ var Lightbox = React.createClass({
           renderHeader: this._renderHeader,
           renderFooter: this._renderFooter,
           renderBackground: this._renderBackground,
+          hidesPreviousSceneAfterTransition: false,
           onOpeningTransitionStart: () => {
             if(this.props.hidesStatusBar && StatusBarIOS) {
               StatusBarIOS.setHidden(true, true);
@@ -161,6 +164,34 @@ var Lightbox = React.createClass({
           directionalLockEnabled: true,
           automaticallyAdjustContentInsets: false,
           contentContainerStyle: { flex: 1 },
+          scrollEventThrottle: 16,
+          onScroll: event => {
+            if(isGallery) {
+              var sourceIndex = Math.round(event.nativeEvent.contentOffset.x / DEVICE_WIDTH);
+              if(sourceIndex !== this.state.sourceIndex) {
+                this.setState({ sourceIndex });
+
+                this.props.navigator.navigationContext.emit('originElementChanged', {
+                  originElement: (<AnimatedImage {...imageProps} source={sources[sourceIndex]} />),
+                  route: route,
+                });
+
+                if(this.props.onSourceChange) {
+                  this.props.onSourceChange(this.props.source[sourceIndex], sourceIndex);
+                }
+              }
+            }
+            if(this.props.swipeToDismiss) {
+              var offsetY = -event.nativeEvent.contentOffset.y;
+              if(this._offsetY !== offsetY) {
+                this._offsetY = offsetY;
+                this.props.navigator.navigationContext.emit('offsetYChanged', {
+                  offsetY,
+                  route: route,
+                });
+              }
+            }
+          }
         };
         if(!isGallery && !isZoomable) {
           route.passProps.children = (<ImageComponent {...imageProps} />);
@@ -174,22 +205,6 @@ var Lightbox = React.createClass({
           pagingEnabled: true,
           contentOffset: { x: DEVICE_WIDTH * this.state.sourceIndex },
           contentContainerStyle: { flex: 1, width: DEVICE_WIDTH * sources.length },
-          scrollEventThrottle: 16,
-          onScroll: event => {
-            var sourceIndex = Math.round(event.nativeEvent.contentOffset.x / DEVICE_WIDTH);
-            if(sourceIndex !== this.state.sourceIndex) {
-              this.setState({ sourceIndex });
-
-              this.props.navigator.navigationContext.emit('originElementChanged', {
-                originElement: (<AnimatedImage {...imageProps} source={sources[this.state.sourceIndex]} />),
-                route: route,
-              });
-
-              if(this.props.onSourceChange) {
-                this.props.onSourceChange(this.props.source[sourceIndex], sourceIndex);
-              }
-            }
-          }
         };
       }
 

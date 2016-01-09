@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/oblador/react-native-lightbox",
   "peerDependencies": {
-    "react-native": ">=0.11.0 || 0.11.0-rc || 0.12.0-rc || 0.13.0-rc || 0.14.0-rc || 0.15.0-rc || 0.16.0-rc"
+    "react-native": ">=0.18.0 || 0.18.0-rc"
   },
   "dependencies": {
     "lodash": "^3.10.1",

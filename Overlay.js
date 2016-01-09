@@ -59,12 +59,13 @@ var LightboxOverlay = React.createClass({
     }),
   },
 
+  _offsetY: 0,
+
   getInitialState: function() {
     return {
       isAnimating: false,
       isOpen: false,
       target: {
-        opacity: 1,
         ...this.props.target
       },
       openVal: new Animated.Value(0),
@@ -104,10 +105,17 @@ var LightboxOverlay = React.createClass({
         });
       }
     });
+    this._offsetYSubscription = this.props.navigator.navigationContext.addListener('offsetYChanged', event => {
+      if(event.data.route === this.props.route && !this.state.isAnimating) {
+        var offsetY = this._offsetY = event.data.offsetY;
+        this.state.openVal.setValue(this.getOpenValueForOffsetY(offsetY));
+      }
+    });
   },
 
   componentWillUnmount: function() {
     this._originElementSubscription.remove();
+    this._offsetYSubscription.remove();
   },
 
   _isContentRendered: false,
@@ -118,12 +126,15 @@ var LightboxOverlay = React.createClass({
     this._isContentRendered = true;
   },
 
+  getOpenValueForOffsetY: function(offsetY) {
+    return Math.max(0, (DRAG_DISMISS_THRESHOLD - Math.abs(offsetY)) / DRAG_DISMISS_THRESHOLD);
+  },
+
   open: function() {
     this.props.onOpeningTransitionStart();
     this.setState({
       isAnimating: true,
       target: {
-        opacity: 1,
         ...this.props.target
       }
     }, () => {
@@ -145,7 +156,19 @@ var LightboxOverlay = React.createClass({
     }
     this.setState({
       isAnimating: true,
+      target: {
+        ...this.state.target,
+        y: this.state.target.y + this._offsetY,
+      },
+      opacityVal: (this._offsetY ?
+        Animated.multiply(
+          new Animated.Value(this.getOpenValueForOffsetY(this._offsetY)),
+          this.state.openVal
+        )
+        : undefined
+      ),
     }, () => {
+      this.state.openVal.setValue(1);
       Animated.spring(
         this.state.openVal,
         { toValue: 0, ...this.props.springConfig }
@@ -192,8 +215,13 @@ var LightboxOverlay = React.createClass({
       isAnimating,
       isOpen,
       openVal,
+      opacityVal,
       target,
     } = this.state;
+
+    if(!opacityVal) {
+      opacityVal = openVal;
+    }
 
     var originElement = this.state.originElement || this.props.originElement;
 
@@ -254,11 +282,11 @@ var LightboxOverlay = React.createClass({
 
     return (
       <View style={styles.container}>
-        {renderBackground && renderBackground(openVal)}
+        {renderBackground && renderBackground(opacityVal)}
         {preview}
         {content}
-        {renderHeader && renderHeader(openVal)}
-        {renderFooter && renderFooter(openVal)}
+        {renderHeader && renderHeader(opacityVal)}
+        {renderFooter && renderFooter(opacityVal)}
       </View>
     );
   },
