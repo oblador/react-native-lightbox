@@ -137,10 +137,10 @@ var LightboxOverlay = React.createClass({
       this.state.openVal,
       { toValue: 0, ...this.props.springConfig }
     ).start(() => {
-      this.props.onClose();
       this.setState({
         isAnimating: false,
       });
+      this.props.onClose();
     });
   },
 
