@@ -18,6 +18,12 @@ var {
   Platform,
 } = React;
 
+if(Platform.OS === 'android') {
+  var {
+    BackAndroid
+  } = React;
+}
+
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
 var DRAG_DISMISS_THRESHOLD = 150;
@@ -106,10 +112,25 @@ var LightboxOverlay = React.createClass({
     }
   },
 
+  onAndroidBack: function() {
+    if(Platform.OS === 'android') {
+      if(this.props.isOpen) {
+        this.close();
+        return true;
+      }
+      return false;
+    }
+  },
+
   open: function() {
     if(StatusBarIOS) {
       StatusBarIOS.setHidden(true, 'fade');
     }
+
+    if(Platform.OS === 'android') {
+      BackAndroid.addEventListener('hardwareBackPress', this.onAndroidBack);
+    }
+
     this.state.pan.setValue(0);
     this.setState({
       isAnimating: true,
@@ -129,6 +150,9 @@ var LightboxOverlay = React.createClass({
   close: function() {
     if(StatusBarIOS) {
       StatusBarIOS.setHidden(false, 'fade');
+    }
+    if(Platform.OS === 'android') {
+      BackAndroid.removeEventListener('hardwareBackPress', this.onAndroidBack);
     }
     this.setState({
       isAnimating: true,
