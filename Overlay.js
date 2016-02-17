@@ -78,7 +78,7 @@ var LightboxOverlay = React.createClass({
       onOpeningTransitionEnd: noop,
       onClosingTransitionStart: noop,
       onClosingTransitionEnd: noop,
-      springConfig: { tension: 30, friction: 7 },
+      springConfig: { tension: 15, friction: 6 },
       origin: {
         x: DEVICE_WIDTH/2,
         y: DEVICE_HEIGHT/2,
@@ -240,13 +240,40 @@ var LightboxOverlay = React.createClass({
 
       openStyle.push({
         left:   this._createInterpolation(origin.x + deltaX, target.x),
-        top:    this._createInterpolation(origin.y + deltaY, target.y),
+        top:    this.state.openVal.interpolate({
+          inputRange: [
+            0,
+            Math.abs(target.y - origin.y + deltaY) < 30
+              ? (isOpen ? 0.3 : 0.7) :
+              (isOpen ? 0.8 : 0.2),
+            1
+          ],
+          outputRange: [
+            origin.y + deltaY,
+            Math.abs(target.y - origin.y + deltaY) < 30
+              ? (isOpen ? target.y + 20 : origin.y + deltaY - 20)
+              : (isOpen ? target.y : origin.y + deltaY),
+            target.y
+          ]
+        }),
         width:  target.width,
         height: target.height,
+        backfaceVisibility: 'hidden',
         transform: [{
-          scaleX: this._createInterpolation(scaleX , 1),
+          scaleX: this.state.openVal.interpolate({
+            inputRange: [0, isOpen ? 0.8 : 0.4, 1],
+            outputRange: [scaleY, isOpen ? 0.95 : scaleY * 0.95, 1],
+          })
         },{
           scaleY: this._createInterpolation(scaleY, 1),
+        },{
+          perspective: 850
+        },{
+          rotateX: this.state.openVal.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: ['0deg', isOpen ? '15deg' : '-15deg', '0deg'],
+            extrapolate: 'clamp'
+          })
         }]
       });
     } else {
@@ -283,7 +310,7 @@ var LightboxOverlay = React.createClass({
     return (
       <View style={styles.container}>
         {renderBackground && renderBackground(opacityVal)}
-        {preview}
+        <View>{preview}</View>
         {content}
         {renderHeader && renderHeader(opacityVal)}
         {renderFooter && renderFooter(opacityVal)}
