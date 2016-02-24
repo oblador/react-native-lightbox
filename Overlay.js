@@ -261,8 +261,8 @@ var LightboxOverlay = React.createClass({
         backfaceVisibility: 'hidden',
         transform: [{
           scaleX: this.state.openVal.interpolate({
-            inputRange: [0, isOpen ? 0.8 : 0.4, 1],
-            outputRange: [scaleY, isOpen ? 0.95 : scaleY * 0.95, 1],
+            inputRange: scaleX === 1 ? [0, isOpen ? 0.8 : 0.4, 1] : [0, 1],
+            outputRange: scaleX === 1 ? [scaleX, isOpen ? 0.95 : scaleX * 0.95, 1] : [scaleX, 1],
           })
         },{
           scaleY: this._createInterpolation(scaleY, 1),
