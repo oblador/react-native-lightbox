@@ -115,6 +115,7 @@ var LightboxNavigator = React.createClass({
       transitionView.close(() => {
         this._immediatelyPop();
         delete this._transitionViews[popIndex];
+        this._root._emitDidFocus(this._root.state.routeStack[popIndex]);
       });
     } else {
       this._root.pop();
