@@ -19,7 +19,7 @@ var cloneElement = require('react-native-clone-referenced-element');
 
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
-var DRAG_DISMISS_THRESHOLD = 150;
+var DRAG_DISMISS_THRESHOLD = 100;
 var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? 25 : 0);
 
 var noop = function() {};
@@ -262,8 +262,8 @@ var LightboxOverlay = React.createClass({
         backfaceVisibility: 'hidden',
         transform: [{
           scaleX: this.state.openVal.interpolate({
-            inputRange: scaleX === 1 ? [0, isOpen ? 0.8 : 0.4, 1] : [0, 1],
-            outputRange: scaleX === 1 ? [scaleX, isOpen ? 0.95 : scaleX * 0.95, 1] : [scaleX, 1],
+            inputRange: scaleX === 1 ? (this._offsetY > DRAG_DISMISS_THRESHOLD ? [0, 1] : [0, isOpen ? 0.8 : 0.4, 1]) : [0, 1],
+            outputRange: scaleX === 1 ? (this._offsetY > DRAG_DISMISS_THRESHOLD ? [1, 0.95] : [scaleX, isOpen ? 0.95 : scaleX * 0.95, 1]) : [scaleX, 1],
           })
         },{
           scaleY: this._createInterpolation(scaleY, 1),
@@ -272,7 +272,7 @@ var LightboxOverlay = React.createClass({
         },{
           rotateX: this.state.openVal.interpolate({
             inputRange: [0, 0.5, 1],
-            outputRange: ['0deg', isOpen ? '15deg' : '-15deg', '0deg'],
+            outputRange: (this._offsetY > DRAG_DISMISS_THRESHOLD ? ['0deg', '7.5deg', '15deg'] : ['0deg', isOpen ? '15deg' : '-15deg', '0deg']),
             extrapolate: 'clamp'
           })
         }]
