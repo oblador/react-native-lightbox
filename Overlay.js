@@ -101,7 +101,8 @@ var LightboxOverlay = React.createClass({
     this._originElementSubscription = this.props.navigator.navigationContext.addListener('originElementChanged', event => {
       if(event.data.route === this.props.route) {
         this.setState({
-          originElement: event.data.originElement
+          originElement: event.data.originElement,
+          origin: event.data.origin
         });
       }
     });
@@ -206,7 +207,6 @@ var LightboxOverlay = React.createClass({
       renderBackground,
       renderHeader,
       renderFooter,
-      origin,
       resizeMode,
       hidesContentDuringTransition,
     } = this.props;
@@ -223,6 +223,7 @@ var LightboxOverlay = React.createClass({
       opacityVal = openVal;
     }
 
+    var origin = this.state.origin || this.props.origin;
     var originElement = this.state.originElement || this.props.originElement;
 
     var openStyle = [styles.open];
