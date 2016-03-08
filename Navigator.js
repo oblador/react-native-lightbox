@@ -137,6 +137,19 @@ var LightboxNavigator = React.createClass({
     }
   },
 
+  popAtIndex: function(popIndex) {
+    var route = this._root.state.routeStack[popIndex];
+    var sceneConfig = this._root.props.configureScene(route);
+    var routes = this.getCurrentRoutes();
+    routes.splice(popIndex, 1);
+    this.immediatelyResetRouteStack(routes);
+    if(sceneConfig.transitionComponent) {
+      if (route.transitionProps && route.transitionProps.onClosingTransitionEnd) {
+        route.transitionProps.onClosingTransitionEnd();
+      }
+    }
+  },
+
   replaceAtIndex: function(route, index) {
     return this._root.replaceAtIndex(route, index);
   },
