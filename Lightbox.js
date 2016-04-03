@@ -20,17 +20,18 @@ var Lightbox = React.createClass({
   mixins: [TimerMixin],
 
   propTypes: {
-    activeProps:    PropTypes.object,
-    renderHeader:   PropTypes.func,
-    renderContent:  PropTypes.func,
-    underlayColor:  PropTypes.string,
-    onOpen:         PropTypes.func,
-    onClose:        PropTypes.func,
-    springConfig:   PropTypes.shape({
-      tension:      PropTypes.number,
-      friction:     PropTypes.number,
+    activeProps:     PropTypes.object,
+    renderHeader:    PropTypes.func,
+    renderContent:   PropTypes.func,
+    underlayColor:   PropTypes.string,
+    backgroundColor: PropTypes.string,
+    onOpen:          PropTypes.func,
+    onClose:         PropTypes.func,
+    springConfig:    PropTypes.shape({
+      tension:       PropTypes.number,
+      friction:      PropTypes.number,
     }),
-    swipeToDismiss: PropTypes.bool,
+    swipeToDismiss:  PropTypes.bool,
   },
 
   getDefaultProps: function() {
@@ -73,6 +74,7 @@ var Lightbox = React.createClass({
       renderHeader: this.props.renderHeader,
       swipeToDismiss: this.props.swipeToDismiss,
       springConfig: this.props.springConfig,
+      backgroundColor: this.props.backgroundColor,
       children: this.getContent(),
       onClose: this.onClose,
     };

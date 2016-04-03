@@ -35,11 +35,12 @@ var LightboxOverlay = React.createClass({
       tension:  PropTypes.number,
       friction: PropTypes.number,
     }),
-    isOpen:         PropTypes.bool,
-    renderHeader:   PropTypes.func,
-    onOpen:         PropTypes.func,
-    onClose:        PropTypes.func,
-    swipeToDismiss: PropTypes.bool,
+    backgroundColor: PropTypes.string,
+    isOpen:          PropTypes.bool,
+    renderHeader:    PropTypes.func,
+    onOpen:          PropTypes.func,
+    onClose:         PropTypes.func,
+    swipeToDismiss:  PropTypes.bool,
   },
 
   getInitialState: function() {
@@ -59,6 +60,7 @@ var LightboxOverlay = React.createClass({
   getDefaultProps: function() {
     return {
       springConfig: { tension: 30, friction: 7 },
+      backgroundColor: 'black',
     };
   },
 
@@ -152,6 +154,7 @@ var LightboxOverlay = React.createClass({
       renderHeader,
       swipeToDismiss,
       origin,
+      backgroundColor,
     } = this.props;
 
     var {
@@ -186,7 +189,7 @@ var LightboxOverlay = React.createClass({
       height: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.height, WINDOW_HEIGHT]}),
     }];
 
-    var background = (<Animated.View style={[styles.background, lightboxOpacityStyle]}></Animated.View>);
+    var background = (<Animated.View style={[styles.background, { backgroundColor: backgroundColor }, lightboxOpacityStyle]}></Animated.View>);
     var header = (<Animated.View style={[styles.header, lightboxOpacityStyle]}>{(renderHeader ?
       renderHeader(this.close) :
       (
@@ -226,7 +229,6 @@ var styles = StyleSheet.create({
     left: 0,
     width: WINDOW_WIDTH,
     height: WINDOW_HEIGHT,
-    backgroundColor: 'black',
   },
   open: {
     position: 'absolute',
