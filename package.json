@@ -29,9 +29,6 @@
     "url": "https://github.com/oblador/react-native-lightbox/issues"
   },
   "homepage": "https://github.com/oblador/react-native-lightbox",
-  "peerDependencies": {
-    "react-native": ">=0.11.0 || 0.11.0-rc || 0.12.0-rc || 0.13.0-rc || 0.18.0-rc"
-  },
   "dependencies": {
     "react-timer-mixin": "^0.13.3"
   }
