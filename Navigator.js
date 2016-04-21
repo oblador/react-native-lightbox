@@ -7,6 +7,7 @@ var {
 
 var LightboxNavigator = React.createClass({
   _root: null,
+  _isTransitioning: false,
   _transitionViews: {},
 
   componentWillMount: function() {
@@ -76,6 +77,7 @@ var LightboxNavigator = React.createClass({
   },
 
   _routeDidFocus: function(route, transitionProps) {
+    this._isTransitioning = false;
     this._root._emitDidFocus(route);
     if(transitionProps.hidesPreviousSceneAfterTransition !== false) {
       this._root._hideScenes();
@@ -95,9 +97,14 @@ var LightboxNavigator = React.createClass({
   },
 
   push: function(route) {
+    if (this._isTransitioning) {
+      console.warn('Ignoring push during ongoing transition');
+      return;
+    }
     var pushIndex = this._root.state.presentedIndex + 1;
     var sceneConfig = this._root.props.configureScene(route);
     if(sceneConfig.transitionComponent) {
+      this._isTransitioning = true;
       this._immediatelyPush(route);
     } else {
       this._root.push(route);
@@ -105,6 +112,10 @@ var LightboxNavigator = React.createClass({
   },
 
   pop: function() {
+    if (this._isTransitioning) {
+      console.warn('Ignoring pop during ongoing transition');
+      return;
+    }
     var stackIndex = this._root.state.presentedIndex;
     var transitionView = this._transitionViews[stackIndex];
     if(transitionView) {
