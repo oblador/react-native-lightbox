@@ -170,4 +170,4 @@ var styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('Example', () => Example);
+module.exports = Example;
