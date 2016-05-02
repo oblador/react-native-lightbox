@@ -3,15 +3,15 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+var ReactNative = require('react-native');
 var {
-  PropTypes,
   View,
   TouchableHighlight,
   Animated,
   Children,
   cloneElement,
-} = React;
+} = ReactNative;
 var TimerMixin = require('react-timer-mixin');
 
 var LightboxOverlay = require('./LightboxOverlay');
@@ -20,18 +20,18 @@ var Lightbox = React.createClass({
   mixins: [TimerMixin],
 
   propTypes: {
-    activeProps:     PropTypes.object,
-    renderHeader:    PropTypes.func,
-    renderContent:   PropTypes.func,
-    underlayColor:   PropTypes.string,
-    backgroundColor: PropTypes.string,
-    onOpen:          PropTypes.func,
-    onClose:         PropTypes.func,
-    springConfig:    PropTypes.shape({
-      tension:       PropTypes.number,
-      friction:      PropTypes.number,
+    activeProps:     React.PropTypes.object,
+    renderHeader:    React.PropTypes.func,
+    renderContent:   React.PropTypes.func,
+    underlayColor:   React.PropTypes.string,
+    backgroundColor: React.PropTypes.string,
+    onOpen:          React.PropTypes.func,
+    onClose:         React.PropTypes.func,
+    springConfig:    React.PropTypes.shape({
+      tension:       React.PropTypes.number,
+      friction:      React.PropTypes.number,
     }),
-    swipeToDismiss:  PropTypes.bool,
+    swipeToDismiss:  React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
