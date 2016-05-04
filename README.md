@@ -33,7 +33,7 @@ var LightboxView = React.createClass({
 
 For android support you must pass a reference to a `Navigator` since it does not yet have the `Modal` component and is not on the official todo list. See the `Example` project for a complete example. 
 
-```
+```js
 var MyApp = React.createClass({
   renderScene: function(route, navigator) {
     var Component = route.component;
