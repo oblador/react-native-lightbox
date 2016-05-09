@@ -112,10 +112,6 @@ var LightboxNavigator = React.createClass({
   },
 
   pop: function() {
-    if (this._isTransitioning) {
-      console.warn('Ignoring pop during ongoing transition');
-      return;
-    }
     var stackIndex = this._root.state.presentedIndex;
     var transitionView = this._transitionViews[stackIndex];
     if(transitionView) {
