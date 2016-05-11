@@ -4,6 +4,6 @@
  */
 'use strict';
 
-var React = require('react-native');
+var { AppRegistry } = require('react-native');
 
-React.AppRegistry.registerComponent('Example', () => require('./app'));
+AppRegistry.registerComponent('Example', () => require('./app'));

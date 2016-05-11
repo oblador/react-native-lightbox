@@ -4,18 +4,18 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
   AppRegistry,
-  StyleSheet,
+  Dimensions,
+  Image,
   Navigator,
   ScrollView,
-  Image,
-  View,
+  StyleSheet,
   Text,
-  Dimensions,
   TouchableOpacity,
-} = React;
+  View,
+} = require('react-native');
 
 var Lightbox = require('react-native-lightbox');
 var Carousel = require('react-native-looped-carousel');
@@ -26,7 +26,7 @@ var BASE_PADDING = 10;
 var LightboxView = React.createClass({
   renderCarousel: function() {
     return (
-      <Carousel style={{flex: 1}}>
+      <Carousel style={{ width: WINDOW_WIDTH, height: WINDOW_WIDTH }}>
         <Image
           style={{flex: 1}}
           resizeMode="contain"
@@ -47,7 +47,7 @@ var LightboxView = React.createClass({
           <Image
             style={styles.contain}
             resizeMode="contain"
-            source={{ uri: 'http://www.yayomg.com/wp-content/uploads/2014/04/yayomg-pig-wearing-party-hat.jpg' }}
+            source={{ uri: 'https://www.yayomg.com/wp-content/uploads/2014/04/yayomg-pig-wearing-party-hat.jpg' }}
           />
         </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
@@ -157,8 +157,8 @@ var styles = StyleSheet.create({
     color: 'white',
   },
   carousel: {
-    height: 300,
-    flex: 1,
+    height: WINDOW_WIDTH - BASE_PADDING * 2,
+    width: WINDOW_WIDTH - BASE_PADDING * 2,
     backgroundColor: 'white',
   },
   contain: {
