@@ -3,15 +3,17 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
-  PropTypes,
-  View,
-  TouchableHighlight,
-  Animated,
   Children,
   cloneElement,
+  PropTypes,
 } = React;
+var {
+  Animated,
+  TouchableHighlight,
+  View,
+} = require('react-native');
 var TimerMixin = require('react-timer-mixin');
 
 var LightboxOverlay = require('./LightboxOverlay');

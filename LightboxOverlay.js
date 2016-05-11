@@ -3,20 +3,22 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
   PropTypes,
-  View,
-  Text,
-  Animated,
-  StyleSheet,
-  Dimensions,
-  PanResponder,
-  TouchableOpacity,
-  StatusBar,
-  Modal,
-  Platform,
 } = React;
+var {
+  Animated,
+  Dimensions,
+  Modal,
+  PanResponder,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} = require('react-native');
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
