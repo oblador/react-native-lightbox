@@ -4,7 +4,8 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+var ReactNative = require('react-native');
 var {
   AppRegistry,
   StyleSheet,
@@ -15,7 +16,7 @@ var {
   Text,
   Dimensions,
   TouchableOpacity,
-} = React;
+} = ReactNative;
 
 var Lightbox = require('react-native-lightbox');
 var Carousel = require('react-native-looped-carousel');

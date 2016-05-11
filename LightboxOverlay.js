@@ -3,9 +3,9 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+var ReactNative = require('react-native');
 var {
-  PropTypes,
   View,
   Text,
   Animated,
@@ -16,7 +16,7 @@ var {
   StatusBar,
   Modal,
   Platform,
-} = React;
+} = ReactNative;
 
 var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
@@ -25,22 +25,22 @@ var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 
 var LightboxOverlay = React.createClass({
   propTypes: {
-    origin: PropTypes.shape({
-      x:        PropTypes.number,
-      y:        PropTypes.number,
-      width:    PropTypes.number,
-      height:   PropTypes.number,
+    origin: React.PropTypes.shape({
+      x:        React.PropTypes.number,
+      y:        React.PropTypes.number,
+      width:    React.PropTypes.number,
+      height:   React.PropTypes.number,
     }),
-    springConfig: PropTypes.shape({
-      tension:  PropTypes.number,
-      friction: PropTypes.number,
+    springConfig: React.PropTypes.shape({
+      tension:  React.PropTypes.number,
+      friction: React.PropTypes.number,
     }),
-    backgroundColor: PropTypes.string,
-    isOpen:          PropTypes.bool,
-    renderHeader:    PropTypes.func,
-    onOpen:          PropTypes.func,
-    onClose:         PropTypes.func,
-    swipeToDismiss:  PropTypes.bool,
+    backgroundColor: React.PropTypes.string,
+    isOpen:          React.PropTypes.bool,
+    renderHeader:    React.PropTypes.func,
+    onOpen:          React.PropTypes.func,
+    onClose:         React.PropTypes.func,
+    swipeToDismiss:  React.PropTypes.bool,
   },
 
   getInitialState: function() {
