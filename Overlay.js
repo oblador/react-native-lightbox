@@ -1,8 +1,10 @@
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
-  PropTypes,
+  PropTypes
+} = React;
+var {
   View,
   Text,
   Animated,
@@ -13,7 +15,7 @@ var {
   Children,
   InteractionManager,
   Platform,
-} = React;
+} = require('react-native');
 
 var cloneElement = require('react-native-clone-referenced-element');
 

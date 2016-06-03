@@ -31,6 +31,6 @@
   "homepage": "https://github.com/oblador/react-native-lightbox",
   "dependencies": {
     "lodash": "^3.10.1",
-    "react-native-clone-referenced-element": "^1.0.0"
+    "react-clone-referenced-element": "^1.0.0"
   }
 }

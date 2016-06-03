@@ -1,10 +1,12 @@
 'use strict';
 
 var pick = require('lodash/object/pick');
-var React = require('react-native');
+var React = require('react');
+var {
+  PropTypes
+} = React;
 var {
   StyleSheet,
-  PropTypes,
   Image,
   View,
   ScrollView,
@@ -14,7 +16,7 @@ var {
   Dimensions,
   StatusBarIOS,
   Platform,
-} = React;
+} = require('react-native');
 
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
