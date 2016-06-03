@@ -14,7 +14,7 @@ var {
   Animated,
   Children,
   Dimensions,
-  StatusBarIOS,
+  StatusBar,
   Platform,
 } = require('react-native');
 
@@ -118,8 +118,8 @@ var Lightbox = React.createClass({
           renderBackground: this._renderBackground,
           hidesPreviousSceneAfterTransition: false,
           onOpeningTransitionStart: () => {
-            if(this.props.hidesStatusBar && StatusBarIOS) {
-              StatusBarIOS.setHidden(true, true);
+            if(this.props.hidesStatusBar && StatusBar) {
+              StatusBar.setHidden(true, true);
             }
             if(this.props.onOpeningTransitionStart) {
               this.props.onOpeningTransitionStart();
@@ -127,8 +127,8 @@ var Lightbox = React.createClass({
             this.state.layoutOpacity.setValue(0);
           },
           onClosingTransitionStart: () => {
-            if(this.props.hidesStatusBar && StatusBarIOS) {
-              StatusBarIOS.setHidden(false, true);
+            if(this.props.hidesStatusBar && StatusBar) {
+              StatusBar.setHidden(false, true);
             }
             if(this.props.onClosingTransitionStart) {
               this.props.onClosingTransitionStart();
