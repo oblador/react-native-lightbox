@@ -142,13 +142,13 @@ var LightboxNavigator = React.createClass({
   },
 
   render: function() {
-    var { children, ref, renderScene, configureScene, sceneStyle, ...props } = this.props;
+    var { children, reference, renderScene, configureScene, sceneStyle, ...props } = this.props;
     return (
       <Navigator
         ref={component => {
           this._root = component
-          if(typeof ref === 'function') {
-            ref(component);
+          if(typeof reference === 'function') {
+            reference(component);
           }
         }}
         renderScene={this._renderSceneProxy}

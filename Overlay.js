@@ -260,15 +260,15 @@ var LightboxOverlay = React.createClass({
       });
     }
 
-    var preview = originElement && cloneElement(
-      Children.only(originElement),
+    var preview = originElement && React.Children.map(React.Children.only(originElement), (child) => React.cloneElement(child,
       {
         style: [
           openStyle,
           { opacity: !this._isContentRendered || isAnimating ? 1 : 0 },
         ],
+        // reference: this.props.ref
       }
-    );
+    ));
 
     var content = (
       <Animated.View
