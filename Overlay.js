@@ -17,7 +17,7 @@ var {
   Platform,
 } = require('react-native');
 
-var cloneElement = require('react-native-clone-referenced-element');
+var cloneElement = require('react-clone-referenced-element');
 
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
