@@ -215,7 +215,7 @@ var LightboxOverlay = React.createClass({
     );
     if(this.props.navigator) {
       return (
-        <View onLayout={() => {this.recalculateDimensions();}}>
+        <View onLayout={() => {this.recalculateDimensions()}}>
           {background}
           {content}
           {header}
@@ -223,11 +223,13 @@ var LightboxOverlay = React.createClass({
       );
     }
     return (
-      <Modal visible={isOpen} transparent={true} onLayout={() => {this.recalculateDimensions();}} >
-        {background}
-        {content}
-        {header}
-      </Modal>
+      <View onLayout={() => {this.recalculateDimensions()}}>
+        <Modal visible={isOpen} transparent={true}>
+          {background}
+          {content}
+          {header}
+        </Modal>
+      </View>
     );
   }
 });
