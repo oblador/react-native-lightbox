@@ -1,6 +1,6 @@
 {
   "name": "react-native-lightbox",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Images etc in Full Screen Lightbox Popovers for React Native",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,6 @@
   "homepage": "https://github.com/oblador/react-native-lightbox",
   "dependencies": {
     "lodash": "^3.10.1",
-    "react-native-clone-referenced-element": "^1.0.0"
+    "react-clone-referenced-element": "^1.0.0"
   }
 }

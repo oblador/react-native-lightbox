@@ -6,7 +6,8 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "react-native": "^0.18.0-rc",
+    "react": "15.0.2",
+    "react-native": "^0.26.2",
     "react-native-lightbox": "file:../"
   }
 }
