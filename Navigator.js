@@ -1,9 +1,9 @@
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
   Navigator,
-} = React;
+} = require('react-native');
 
 var LightboxNavigator = React.createClass({
   _root: null,
@@ -142,13 +142,13 @@ var LightboxNavigator = React.createClass({
   },
 
   render: function() {
-    var { children, ref, renderScene, configureScene, sceneStyle, ...props } = this.props;
+    var { children, reference, renderScene, configureScene, sceneStyle, ...props } = this.props;
     return (
       <Navigator
         ref={component => {
           this._root = component
-          if(typeof ref === 'function') {
-            ref(component);
+          if(typeof reference === 'function') {
+            reference(component);
           }
         }}
         renderScene={this._renderSceneProxy}

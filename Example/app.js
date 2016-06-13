@@ -4,7 +4,7 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
   AppRegistry,
   StyleSheet,
@@ -18,7 +18,7 @@ var {
   TouchableHighlight,
   TouchableOpacity,
   Platform,
-} = React;
+} = require('react-native');
 
 var Lightbox = require('react-native-lightbox');
 

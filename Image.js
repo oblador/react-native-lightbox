@@ -1,10 +1,12 @@
 'use strict';
 
 var pick = require('lodash/object/pick');
-var React = require('react-native');
+var React = require('react');
+var {
+  PropTypes
+} = React;
 var {
   StyleSheet,
-  PropTypes,
   Image,
   View,
   ScrollView,
@@ -12,9 +14,9 @@ var {
   Animated,
   Children,
   Dimensions,
-  StatusBarIOS,
+  StatusBar,
   Platform,
-} = React;
+} = require('react-native');
 
 var DEVICE_HEIGHT = Dimensions.get('window').height;
 var DEVICE_WIDTH = Dimensions.get('window').width;
@@ -116,8 +118,8 @@ var Lightbox = React.createClass({
           renderBackground: this._renderBackground,
           hidesPreviousSceneAfterTransition: false,
           onOpeningTransitionStart: () => {
-            if(this.props.hidesStatusBar && StatusBarIOS) {
-              StatusBarIOS.setHidden(true, true);
+            if(this.props.hidesStatusBar && StatusBar) {
+              StatusBar.setHidden(true, true);
             }
             if(this.props.onOpeningTransitionStart) {
               this.props.onOpeningTransitionStart();
@@ -125,8 +127,8 @@ var Lightbox = React.createClass({
             this.state.layoutOpacity.setValue(0);
           },
           onClosingTransitionStart: () => {
-            if(this.props.hidesStatusBar && StatusBarIOS) {
-              StatusBarIOS.setHidden(false, true);
+            if(this.props.hidesStatusBar && StatusBar) {
+              StatusBar.setHidden(false, true);
             }
             if(this.props.onClosingTransitionStart) {
               this.props.onClosingTransitionStart();
