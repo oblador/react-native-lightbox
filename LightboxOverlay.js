@@ -46,6 +46,11 @@ var LightboxOverlay = React.createClass({
   },
 
   getInitialState: function() {
+
+    if (!this.props.hideStatusBar) {
+      STATUS_BAR_OFFSET = 0;
+    }
+      
     return {
       isAnimating: false,
       isPanning: false,
@@ -219,7 +224,7 @@ var LightboxOverlay = React.createClass({
       );
     }
     return (
-      <Modal visible={isOpen} transparent={true} onRequestClose={() => {}}>
+      <Modal visible={isOpen} transparent={true} onRequestClose={() =>{}}>
         {background}
         {content}
         {header}
