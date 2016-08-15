@@ -34,11 +34,13 @@ var Lightbox = React.createClass({
       friction:      PropTypes.number,
     }),
     swipeToDismiss:  PropTypes.bool,
+    hideStatusBar:   PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       swipeToDismiss: true,
+      hideStatusBar: true,
       onOpen: () => {},
       onClose: () => {},
     };
@@ -75,6 +77,7 @@ var Lightbox = React.createClass({
       origin: this.state.origin,
       renderHeader: this.props.renderHeader,
       swipeToDismiss: this.props.swipeToDismiss,
+      hideStatusBar: this.props.hideStatusBar,
       springConfig: this.props.springConfig,
       backgroundColor: this.props.backgroundColor,
       children: this.getContent(),
