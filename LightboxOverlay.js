@@ -46,6 +46,11 @@ var LightboxOverlay = React.createClass({
   },
 
   getInitialState: function() {
+
+    if (!this.props.hideStatusBar) {
+      STATUS_BAR_OFFSET = 0;
+    }
+
     return {
       isAnimating: false,
       isPanning: false,
@@ -111,7 +116,9 @@ var LightboxOverlay = React.createClass({
   },
 
   open: function() {
-    StatusBar.setHidden(true, 'fade');
+    if (this.props.hideStatusBar) {
+      StatusBar.setHidden(true, 'fade');
+    }
     this.state.pan.setValue(0);
     this.setState({
       isAnimating: true,
@@ -129,7 +136,9 @@ var LightboxOverlay = React.createClass({
   },
 
   close: function() {
-    StatusBar.setHidden(false, 'fade');
+    if (this.props.hideStatusBar) {
+      StatusBar.setHidden(false, 'fade');
+    }
     this.setState({
       isAnimating: true,
     });
@@ -205,7 +214,7 @@ var LightboxOverlay = React.createClass({
         {this.props.children}
       </Animated.View>
     );
-    if(this.props.navigator) {
+    if(!this.props.useModal) {
       return (
         <View>
           {background}
@@ -215,7 +224,7 @@ var LightboxOverlay = React.createClass({
       );
     }
     return (
-      <Modal visible={isOpen} transparent={true}>
+      <Modal visible={isOpen} transparent={true} onRequestClose={() =>{}}>
         {background}
         {content}
         {header}

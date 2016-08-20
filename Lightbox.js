@@ -34,11 +34,15 @@ var Lightbox = React.createClass({
       friction:      PropTypes.number,
     }),
     swipeToDismiss:  PropTypes.bool,
+    hideStatusBar:   PropTypes.bool,
+    showOverlay:     PropTypes.func,
+    hideOverlay:     PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
       swipeToDismiss: true,
+      hideStatusBar: true,
       onOpen: () => {},
       onClose: () => {},
     };
@@ -75,11 +79,17 @@ var Lightbox = React.createClass({
       origin: this.state.origin,
       renderHeader: this.props.renderHeader,
       swipeToDismiss: this.props.swipeToDismiss,
+      hideStatusBar: this.props.hideStatusBar,
       springConfig: this.props.springConfig,
       backgroundColor: this.props.backgroundColor,
       children: this.getContent(),
       onClose: this.onClose,
+      useModal: this._useModal(),
     };
+  },
+
+  _useModal() {
+    return !this.navigator && !this.props.showOverlay;
   },
 
   open: function() {
@@ -87,7 +97,7 @@ var Lightbox = React.createClass({
       this.props.onOpen();
 
       this.setState({
-        isOpen: (this.props.navigator ? true : false),
+        isOpen: !this._useModal(),
         isAnimating: true,
         origin: {
           width,
@@ -96,7 +106,9 @@ var Lightbox = React.createClass({
           y: py,
         },
       }, () => {
-        if(this.props.navigator) {
+        if (this.props.showOverlay) {
+          this.props.showOverlay(LightboxOverlay, this.getOverlayProps());
+        } else if (this.props.navigator) {
           var route = {
             component: LightboxOverlay,
             passProps: this.getOverlayProps(),
@@ -125,7 +137,9 @@ var Lightbox = React.createClass({
     this.setState({
       isOpen: false,
     }, this.props.onClose);
-    if(this.props.navigator) {
+    if (this.props.hideOverlay) {
+      this.props.hideOverlay();
+    } else if (this.props.navigator) {
       var routes = this.props.navigator.getCurrentRoutes();
       routes.pop();
       this.props.navigator.immediatelyResetRouteStack(routes);
@@ -148,7 +162,7 @@ var Lightbox = React.createClass({
             {this.props.children}
           </TouchableHighlight>
         </Animated.View>
-        {this.props.navigator ? false : <LightboxOverlay {...this.getOverlayProps()} />}
+        {this._useModal() && <LightboxOverlay {...this.getOverlayProps()} />}
       </View>
     );
   }
