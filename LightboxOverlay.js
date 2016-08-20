@@ -50,7 +50,7 @@ var LightboxOverlay = React.createClass({
     if (!this.props.hideStatusBar) {
       STATUS_BAR_OFFSET = 0;
     }
-      
+
     return {
       isAnimating: false,
       isPanning: false,
@@ -214,7 +214,7 @@ var LightboxOverlay = React.createClass({
         {this.props.children}
       </Animated.View>
     );
-    if(this.props.navigator) {
+    if(!this.props.useModal) {
       return (
         <View>
           {background}
