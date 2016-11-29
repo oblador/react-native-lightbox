@@ -58,7 +58,9 @@ var Lightbox = React.createClass({
   },
 
   getContent: function() {
-    if(this.props.renderContent) {
+    if((this.props.renderContent) && (this.props.activeProps)) {
+      return this.props.renderContent(this.props.activeProps);
+    } else if(this.props.renderContent) {
       return this.props.renderContent();
     } else if(this.props.activeProps) {
       return cloneElement(
