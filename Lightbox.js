@@ -145,7 +145,9 @@ var Lightbox = React.createClass({
             underlayColor={this.props.underlayColor}
             onPress={this.open}
           >
-            {this.props.children}
+            <View style={{flex: 1}}>
+              {this.props.children}
+            </View>
           </TouchableHighlight>
         </Animated.View>
         {this.props.navigator ? false : <LightboxOverlay {...this.getOverlayProps()} />}
