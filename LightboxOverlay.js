@@ -140,8 +140,9 @@ var LightboxOverlay = React.createClass({
       this.setState({
         isAnimating: false,
       });
-      this.props.onClose();
+      
     });
+    this.props.onClose();
   },
 
   componentWillReceiveProps: function(props) {
