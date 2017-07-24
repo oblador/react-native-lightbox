@@ -3,10 +3,9 @@
  */
 'use strict';
 
-var React = require('react');
-var {
-  PropTypes,
-} = React;
+import React from 'react';
+import PropTypes from 'prop-types';
+var createReactClass = require('create-react-class');
 var {
   Animated,
   Dimensions,
@@ -25,7 +24,7 @@ var WINDOW_WIDTH = Dimensions.get('window').width;
 var DRAG_DISMISS_THRESHOLD = 150;
 var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 
-var LightboxOverlay = React.createClass({
+var LightboxOverlay = createReactClass({
   propTypes: {
     origin: PropTypes.shape({
       x:        PropTypes.number,
