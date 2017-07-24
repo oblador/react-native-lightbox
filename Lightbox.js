@@ -3,12 +3,8 @@
  */
 'use strict';
 
-var React = require('react');
-var {
-  Children,
-  cloneElement,
-} = React;
-var PropTypes = require('prop-types');
+import React, { Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
 var {
   Animated,
   TouchableHighlight,
