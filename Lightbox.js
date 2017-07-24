@@ -4,7 +4,9 @@
 'use strict';
 
 import React, { Children, cloneElement } from 'react';
+
 import PropTypes from 'prop-types';
+var createReactClass = require('create-react-class');
 var {
   Animated,
   TouchableHighlight,
@@ -14,7 +16,7 @@ var TimerMixin = require('react-timer-mixin');
 
 var LightboxOverlay = require('./LightboxOverlay');
 
-var Lightbox = React.createClass({
+var Lightbox = createReactClass({
   mixins: [TimerMixin],
 
   propTypes: {
