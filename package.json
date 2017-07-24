@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/oblador/react-native-lightbox",
   "dependencies": {
+    "prop-types": "^15.5.10",
     "react-timer-mixin": "^0.13.3"
   }
 }
