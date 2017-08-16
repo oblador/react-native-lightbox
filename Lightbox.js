@@ -6,20 +6,18 @@
 import React, { Children, cloneElement } from 'react';
 
 import PropTypes from 'prop-types';
-var createReactClass = require('create-react-class');
 var {
   Animated,
   TouchableHighlight,
   View,
 } = require('react-native');
 var TimerMixin = require('react-timer-mixin');
+var reactMixin = require('react-mixin');
 
 var LightboxOverlay = require('./LightboxOverlay');
 
-var Lightbox = createReactClass({
-  mixins: [TimerMixin],
-
-  propTypes: {
+class Lightbox extends React.Component {
+  static propTypes = {
     activeProps:     PropTypes.object,
     renderHeader:    PropTypes.func,
     renderContent:   PropTypes.func,
@@ -32,18 +30,17 @@ var Lightbox = createReactClass({
       friction:      PropTypes.number,
     }),
     swipeToDismiss:  PropTypes.bool,
-  },
+  }
 
-  getDefaultProps: function() {
-    return {
-      swipeToDismiss: true,
-      onOpen: () => {},
-      onClose: () => {},
-    };
-  },
+  static defaultProps = {
+    swipeToDismiss: true,
+    onOpen: () => {},
+    onClose: () => {},
+  }
 
-  getInitialState: function() {
-    return {
+  constructor() {
+    super();
+    this.state = {
       isOpen: false,
       origin: {
         x: 0,
@@ -53,9 +50,18 @@ var Lightbox = createReactClass({
       },
       layoutOpacity: new Animated.Value(1),
     };
-  },
 
-  getContent: function() {
+    this.bindFunctions();
+  }
+
+  bindFunctions() {
+    this.getContent = this.getContent.bind(this);
+    this.getOverlayProps = this.getOverlayProps.bind(this);
+    this.open = this.open.bind(this);
+    this.onClose = this.onClose.bind(this);
+  }
+
+  getContent() {
     if(this.props.renderContent) {
       return this.props.renderContent();
     } else if(this.props.activeProps) {
@@ -65,9 +71,9 @@ var Lightbox = createReactClass({
       );
     }
     return this.props.children;
-  },
+  }
 
-  getOverlayProps: function() {
+  getOverlayProps() {
     return {
       isOpen: this.state.isOpen,
       origin: this.state.origin,
@@ -78,9 +84,9 @@ var Lightbox = createReactClass({
       children: this.getContent(),
       onClose: this.onClose,
     };
-  },
+  }
 
-  open: function() {
+  open() {
     this._root.measure((ox, oy, width, height, px, py) => {
       this.props.onOpen();
 
@@ -112,13 +118,13 @@ var Lightbox = createReactClass({
         });
       });
     });
-  },
+  }
 
-  close: function() {
+  close() {
     throw new Error('Lightbox.close method is deprecated. Use renderHeader(close) prop instead.')
-  },
+  }
 
-  onClose: function() {
+  onClose() {
     this.state.layoutOpacity.setValue(1);
     this.setState({
       isOpen: false,
@@ -128,9 +134,9 @@ var Lightbox = createReactClass({
       routes.pop();
       this.props.navigator.immediatelyResetRouteStack(routes);
     }
-  },
+  }
 
-  render: function() {
+  render() {
     // measure will not return anything useful if we dont attach a onLayout handler on android
     return (
       <View
@@ -150,6 +156,8 @@ var Lightbox = createReactClass({
       </View>
     );
   }
-});
+};
+
+reactMixin(Lightbox.prototype, TimerMixin)
 
 module.exports = Lightbox;

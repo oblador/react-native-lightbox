@@ -5,7 +5,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-var createReactClass = require('create-react-class');
 var {
   Animated,
   Dimensions,
@@ -24,8 +23,8 @@ var WINDOW_WIDTH = Dimensions.get('window').width;
 var DRAG_DISMISS_THRESHOLD = 150;
 var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 
-var LightboxOverlay = createReactClass({
-  propTypes: {
+class LightboxOverlay extends React.Component {
+  static propTypes = {
     origin: PropTypes.shape({
       x:        PropTypes.number,
       y:        PropTypes.number,
@@ -42,10 +41,16 @@ var LightboxOverlay = createReactClass({
     onOpen:          PropTypes.func,
     onClose:         PropTypes.func,
     swipeToDismiss:  PropTypes.bool,
-  },
+  }
 
-  getInitialState: function() {
-    return {
+  static defaultProps = {
+    springConfig: { tension: 30, friction: 7 },
+    backgroundColor: 'black',
+  }
+
+  constructor() {
+    super();
+    this.state = {
       isAnimating: false,
       isPanning: false,
       target: {
@@ -56,16 +61,11 @@ var LightboxOverlay = createReactClass({
       pan: new Animated.Value(0),
       openVal: new Animated.Value(0),
     };
-  },
 
-  getDefaultProps: function() {
-    return {
-      springConfig: { tension: 30, friction: 7 },
-      backgroundColor: 'black',
-    };
-  },
+    this.bindFunctions();
+  }
 
-  componentWillMount: function() {
+  componentWillMount() {
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
       onStartShouldSetPanResponder: (evt, gestureState) => !this.state.isAnimating,
@@ -101,15 +101,20 @@ var LightboxOverlay = createReactClass({
         }
       },
     });
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     if(this.props.isOpen) {
       this.open();
     }
-  },
+  }
 
-  open: function() {
+  bindFunctions() {
+    this.open = this.open.bind(this);
+    this.close = this.close.bind(this);
+  }
+
+  open() {
     StatusBar.setHidden(true, 'fade');
     this.state.pan.setValue(0);
     this.setState({
@@ -125,9 +130,9 @@ var LightboxOverlay = createReactClass({
       this.state.openVal,
       { toValue: 1, ...this.props.springConfig }
     ).start(() => this.setState({ isAnimating: false }));
-  },
+  }
 
-  close: function() {
+  close() {
     StatusBar.setHidden(false, 'fade');
     this.setState({
       isAnimating: true,
@@ -141,15 +146,15 @@ var LightboxOverlay = createReactClass({
       });
       this.props.onClose();
     });
-  },
+  }
 
-  componentWillReceiveProps: function(props) {
+  componentWillReceiveProps(props) {
     if(this.props.isOpen != props.isOpen && props.isOpen) {
       this.open();
     }
-  },
+  }
 
-  render: function() {
+  render() {
     var {
       isOpen,
       renderHeader,
@@ -221,7 +226,7 @@ var LightboxOverlay = createReactClass({
       </Modal>
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   background: {
