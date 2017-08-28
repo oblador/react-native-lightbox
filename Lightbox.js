@@ -3,49 +3,16 @@
  */
 'use strict';
 
-var React = require('react');
-var {
-  Children,
-  cloneElement,
-  PropTypes,
-} = React;
-var {
-  Animated,
-  TouchableHighlight,
-  View,
-} = require('react-native');
-var TimerMixin = require('react-timer-mixin');
+import React, { Component,  Children, cloneElement } from 'react'
+import PropTypes from 'prop-types'
+import { Animated, TouchableHighlight, View } from 'react-native'
 
-var LightboxOverlay = require('./LightboxOverlay');
+import LightboxOverlay from './LightboxOverlay'
 
-var Lightbox = React.createClass({
-  mixins: [TimerMixin],
-
-  propTypes: {
-    activeProps:     PropTypes.object,
-    renderHeader:    PropTypes.func,
-    renderContent:   PropTypes.func,
-    underlayColor:   PropTypes.string,
-    backgroundColor: PropTypes.string,
-    onOpen:          PropTypes.func,
-    onClose:         PropTypes.func,
-    springConfig:    PropTypes.shape({
-      tension:       PropTypes.number,
-      friction:      PropTypes.number,
-    }),
-    swipeToDismiss:  PropTypes.bool,
-  },
-
-  getDefaultProps: function() {
-    return {
-      swipeToDismiss: true,
-      onOpen: () => {},
-      onClose: () => {},
-    };
-  },
-
-  getInitialState: function() {
-    return {
+class Lightbox extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       isOpen: false,
       origin: {
         x: 0,
@@ -54,10 +21,10 @@ var Lightbox = React.createClass({
         height: 0,
       },
       layoutOpacity: new Animated.Value(1),
-    };
-  },
+    }
+  }
 
-  getContent: function() {
+  getContent = () => {
     if(this.props.renderContent) {
       return this.props.renderContent();
     } else if(this.props.activeProps) {
@@ -67,22 +34,20 @@ var Lightbox = React.createClass({
       );
     }
     return this.props.children;
-  },
+  }
 
-  getOverlayProps: function() {
-    return {
-      isOpen: this.state.isOpen,
-      origin: this.state.origin,
-      renderHeader: this.props.renderHeader,
-      swipeToDismiss: this.props.swipeToDismiss,
-      springConfig: this.props.springConfig,
-      backgroundColor: this.props.backgroundColor,
-      children: this.getContent(),
-      onClose: this.onClose,
-    };
-  },
+  getOverlayProps = () => ({
+    isOpen: this.state.isOpen,
+    origin: this.state.origin,
+    renderHeader: this.props.renderHeader,
+    swipeToDismiss: this.props.swipeToDismiss,
+    springConfig: this.props.springConfig,
+    backgroundColor: this.props.backgroundColor,
+    children: this.getContent(),
+    onClose: this.onClose,
+  })
 
-  open: function() {
+  open = () => {
     this._root.measure((ox, oy, width, height, px, py) => {
       this.props.onOpen();
 
@@ -109,18 +74,18 @@ var Lightbox = React.createClass({
             isOpen: true,
           });
         }
-        this.setTimeout(() => {
-          this.state.layoutOpacity.setValue(0);
+        setTimeout(() => {
+          this._root && this.state.layoutOpacity.setValue(0);
         });
       });
     });
-  },
+  }
 
-  close: function() {
+  close = () => {
     throw new Error('Lightbox.close method is deprecated. Use renderHeader(close) prop instead.')
-  },
+  }
 
-  onClose: function() {
+  onClose = () => {
     this.state.layoutOpacity.setValue(1);
     this.setState({
       isOpen: false,
@@ -130,9 +95,9 @@ var Lightbox = React.createClass({
       routes.pop();
       this.props.navigator.immediatelyResetRouteStack(routes);
     }
-  },
+  }
 
-  render: function() {
+  render() {
     // measure will not return anything useful if we dont attach a onLayout handler on android
     return (
       <View
@@ -152,6 +117,27 @@ var Lightbox = React.createClass({
       </View>
     );
   }
-});
+}
 
-module.exports = Lightbox;
+Lightbox.propTypes = {
+  activeProps:     PropTypes.object,
+  renderHeader:    PropTypes.func,
+  renderContent:   PropTypes.func,
+  underlayColor:   PropTypes.string,
+  backgroundColor: PropTypes.string,
+  onOpen:          PropTypes.func,
+  onClose:         PropTypes.func,
+  springConfig:    PropTypes.shape({
+    tension:       PropTypes.number,
+    friction:      PropTypes.number,
+  }),
+  swipeToDismiss:  PropTypes.bool,
+},
+
+Lightbox.defaultProps = {
+  swipeToDismiss: true,
+  onOpen: () => {},
+  onClose: () => {},
+}  
+
+export default Lightbox
