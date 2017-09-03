@@ -3,30 +3,24 @@
 ## Installation
 
 ```
-npm install --save react-native-lightbox
+yarn add react-native-lightbox
 ```
-
-**This module requires React Native 0.11 or later**
 
 ## Usage
 
 `navigator` property is optional but recommended on iOS, see next section for `Navigator` configuration.
 
 ```js
-var Lightbox = require('react-native-lightbox');
+import Lightbox from 'react-native-lightbox';
 
-var LightboxView = React.createClass({
-  render: function() {
-    return (
-      <Lightbox navigator={this.props.navigator}>
-        <Image
-          style={{ height: 300 }}
-          source={{ uri: 'http://knittingisawesome.com/wp-content/uploads/2012/12/cat-wearing-a-reindeer-hat1.jpg' }}
-        />
-      </Lightbox>
-    );
-  },
-});
+const LightboxView ({ navigator }) => (
+  <Lightbox navigator={navigator}>
+    <Image
+      style={{ height: 300 }}
+      source={{ uri: 'http://knittingisawesome.com/wp-content/uploads/2012/12/cat-wearing-a-reindeer-hat1.jpg' }}
+    />
+  </Lightbox>
+);
 ```
 
 ### Navigator setup/Android support
@@ -34,28 +28,24 @@ var LightboxView = React.createClass({
 For android support you must pass a reference to a `Navigator` since it does not yet have the `Modal` component and is not on the official todo list. See the `Example` project for a complete example. 
 
 ```js
-var MyApp = React.createClass({
-  renderScene: function(route, navigator) {
-    var Component = route.component;
+const renderScene = (route, navigator) => {
+  const Component = route.component;
 
-    return (
-      <Component navigator={navigator} route={route} {...route.passProps} />
-    );
-  },
+  return (
+    <Component navigator={navigator} route={route} {...route.passProps} />
+  );
+};
 
-  render: function() {
-    return (
-      <Navigator
-        ref="navigator"
-        style={{ flex: 1 }}
-        renderScene={this.renderScene}
-        initialRoute={{
-          component: LightboxView,
-        }}
-      />
-    );
-  }
-});
+const MyApp = () => (
+  <Navigator
+    ref="navigator"
+    style={{ flex: 1 }}
+    renderScene={renderScene}
+    initialRoute={{
+      component: LightboxView,
+    }}
+  />
+);
 ```
 
 ## Properties
@@ -83,4 +73,3 @@ Check full example in the `Example` folder.
 ## License
 
 [MIT License](http://opensource.org/licenses/mit-license.html). © Joel Arvidsson
-

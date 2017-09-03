@@ -1,28 +1,41 @@
-/**
- * @providesModule Lightbox
- */
-'use strict';
+import React, { Component,  Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
+import { Animated, TouchableHighlight, View } from 'react-native';
 
-import React, { Component,  Children, cloneElement } from 'react'
-import PropTypes from 'prop-types'
-import { Animated, TouchableHighlight, View } from 'react-native'
+import LightboxOverlay from './LightboxOverlay';
 
-import LightboxOverlay from './LightboxOverlay'
+export default class Lightbox extends Component {
+  static propTypes = {
+    activeProps:     PropTypes.object,
+    renderHeader:    PropTypes.func,
+    renderContent:   PropTypes.func,
+    underlayColor:   PropTypes.string,
+    backgroundColor: PropTypes.string,
+    onOpen:          PropTypes.func,
+    onClose:         PropTypes.func,
+    springConfig:    PropTypes.shape({
+      tension:       PropTypes.number,
+      friction:      PropTypes.number,
+    }),
+    swipeToDismiss:  PropTypes.bool,
+  };
 
-class Lightbox extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
-      origin: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-      },
-      layoutOpacity: new Animated.Value(1),
-    }
-  }
+  static defaultProps = {
+    swipeToDismiss: true,
+    onOpen: () => {},
+    onClose: () => {},
+  };
+
+  state = {
+    isOpen: false,
+    origin: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    },
+    layoutOpacity: new Animated.Value(1),
+  };
 
   getContent = () => {
     if(this.props.renderContent) {
@@ -62,11 +75,11 @@ class Lightbox extends Component {
         },
       }, () => {
         if(this.props.navigator) {
-          var route = {
+          const route = {
             component: LightboxOverlay,
             passProps: this.getOverlayProps(),
           };
-          var routes = this.props.navigator.getCurrentRoutes();
+          const routes = this.props.navigator.getCurrentRoutes();
           routes.push(route);
           this.props.navigator.immediatelyResetRouteStack(routes);
         } else {
@@ -91,7 +104,7 @@ class Lightbox extends Component {
       isOpen: false,
     }, this.props.onClose);
     if(this.props.navigator) {
-      var routes = this.props.navigator.getCurrentRoutes();
+      const routes = this.props.navigator.getCurrentRoutes();
       routes.pop();
       this.props.navigator.immediatelyResetRouteStack(routes);
     }
@@ -118,26 +131,3 @@ class Lightbox extends Component {
     );
   }
 }
-
-Lightbox.propTypes = {
-  activeProps:     PropTypes.object,
-  renderHeader:    PropTypes.func,
-  renderContent:   PropTypes.func,
-  underlayColor:   PropTypes.string,
-  backgroundColor: PropTypes.string,
-  onOpen:          PropTypes.func,
-  onClose:         PropTypes.func,
-  springConfig:    PropTypes.shape({
-    tension:       PropTypes.number,
-    friction:      PropTypes.number,
-  }),
-  swipeToDismiss:  PropTypes.bool,
-},
-
-Lightbox.defaultProps = {
-  swipeToDismiss: true,
-  onOpen: () => {},
-  onClose: () => {},
-}  
-
-export default Lightbox
