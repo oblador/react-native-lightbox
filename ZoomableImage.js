@@ -36,7 +36,7 @@ var ZoomableImage = React.createClass({
   },
 
   componentDidMount: function() {
-    if(Image.getSize && this.props.source) {
+    if(Image.getSize && this.props.source.uri) {
       Image.getSize(this.props.source.uri,
         (width, height) => {
           this.setState({width, height});
