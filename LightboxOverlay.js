@@ -11,6 +11,8 @@ var WINDOW_HEIGHT = Dimensions.get('window').height;
 var WINDOW_WIDTH = Dimensions.get('window').width;
 var DRAG_DISMISS_THRESHOLD = 150;
 var STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
+var isIOS = Platform.OS === 'ios';
+
 
 class LightboxOverlay extends Component {
   constructor(props) {
@@ -73,7 +75,9 @@ class LightboxOverlay extends Component {
   }
 
   open = () => {
-    StatusBar.setHidden(true, 'fade');
+    if(isIOS) {
+      StatusBar.setHidden(true, 'fade');
+    }
     this.state.pan.setValue(0);
     this.setState({
       isAnimating: true,
@@ -91,7 +95,9 @@ class LightboxOverlay extends Component {
   }
 
   close = () => {
-    StatusBar.setHidden(false, 'fade');
+    if(isIOS) {
+      StatusBar.setHidden(false, 'fade');
+    }
     this.setState({
       isAnimating: true,
     });
@@ -177,7 +183,7 @@ class LightboxOverlay extends Component {
       );
     }
     return (
-      <Modal visible={isOpen} transparent={true} onRequestClose={() => null}>
+      <Modal visible={isOpen} transparent={true} onRequestClose={() => this.close()}>
         {background}
         {content}
         {header}
