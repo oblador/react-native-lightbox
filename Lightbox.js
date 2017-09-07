@@ -13,6 +13,7 @@ export default class Lightbox extends Component {
     backgroundColor: PropTypes.string,
     onOpen:          PropTypes.func,
     onClose:         PropTypes.func,
+    onLongPress:     PropTypes.func,
     springConfig:    PropTypes.shape({
       tension:       PropTypes.number,
       friction:      PropTypes.number,
@@ -122,6 +123,7 @@ export default class Lightbox extends Component {
           <TouchableHighlight
             underlayColor={this.props.underlayColor}
             onPress={this.open}
+            onLongPress={this.props.onLongPress}
           >
             {this.props.children}
           </TouchableHighlight>
