@@ -63,6 +63,7 @@ export default class LightboxOverlay extends Component {
     renderHeader:    PropTypes.func,
     onOpen:          PropTypes.func,
     onClose:         PropTypes.func,
+    willClose:         PropTypes.func,
     swipeToDismiss:  PropTypes.bool,
   };
 
@@ -144,10 +145,14 @@ export default class LightboxOverlay extends Component {
     Animated.spring(
       this.state.openVal,
       { toValue: 1, ...this.props.springConfig }
-    ).start(() => this.setState({ isAnimating: false }));
+    ).start(() => {
+      this.setState({ isAnimating: false });
+      this.props.didOpen();
+    });
   }
 
   close = () => {
+    this.props.willClose();
     if(isIOS) {
       StatusBar.setHidden(false, 'fade');
     }
