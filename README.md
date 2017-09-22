@@ -25,7 +25,7 @@ const LightboxView ({ navigator }) => (
 
 ### Navigator setup/Android support
 
-For android support you must pass a reference to a `Navigator` since it does not yet have the `Modal` component and is not on the official todo list. See the `Example` project for a complete example. 
+For android support you must pass a reference to a `Navigator` since it does not yet have the `Modal` component and is not on the official todo list. See the `Example` project for a complete example.
 
 ```js
 const renderScene = (route, navigator) => {
@@ -55,8 +55,10 @@ const MyApp = () => (
 |**`activeProps`**|`object`|Optional set of props applied to the content component when in lightbox mode. Usable for applying custom styles or higher resolution image source.|
 |**`renderHeader(close)`**|`function`|Custom header instead of default with X button|
 |**`renderContent`**|`function`|Custom lightbox content instead of default child content|
+|**`willClose`**|`function`|Triggered before lightbox is closed|
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|
+|**`didOpen`**|`function`|Triggered after lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
 |**`backgroundColor`**|`string`|Color of lightbox background, defaults to `black`|
 |**`swipeToDismiss`**|`bool`|Enables gestures to dismiss the fullscreen mode by swiping up or down, defaults to `true`.|
@@ -66,9 +68,9 @@ const MyApp = () => (
 
 ![Demo](https://cloud.githubusercontent.com/assets/378279/9074360/16eac5d6-3b09-11e5-90af-a69980e9f4be.gif)
 
-## Example 
+## Example
 
-Check full example in the `Example` folder. 
+Check full example in the `Example` folder.
 
 ## License
 
