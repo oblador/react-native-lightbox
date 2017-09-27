@@ -137,9 +137,11 @@ export default class LightboxOverlay extends Component {
       onPanResponderMove: (evt, gestureState) => {
         // zoom
         if (gestureState.numberActiveTouches === 2) {
-          let dx = Math.abs(evt.nativeEvent.touches[0].pageX - evt.nativeEvent.touches[1].pageX);
-          let dy = Math.abs(evt.nativeEvent.touches[0].pageY - evt.nativeEvent.touches[1].pageY);
-          let distant = Math.sqrt(dx * dx + dy * dy);
+          // let dx = Math.abs(evt.nativeEvent.touches[0].pageX - evt.nativeEvent.touches[1].pageX);
+          // let dy = Math.abs(evt.nativeEvent.touches[0].pageY - evt.nativeEvent.touches[1].pageY);
+          // let distant = Math.sqrt(dx * dx + dy * dy);
+
+          let distant = this.distance(evt.nativeEvent.touches[0].pageX, evt.nativeEvent.touches[0].pageY, evt.nativeEvent.touches[1].pageX, evt.nativeEvent.touches[1].pageY);
           let scale = distant / this.distant * this.state.lastScale;
           this.setState({ scale });
         }
@@ -155,13 +157,14 @@ export default class LightboxOverlay extends Component {
 
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderRelease: (evt, gestureState) => {
-        if (this.state.scale > 1 ) {
+        if (this.state.scale > 1 ){
           this.setState({
             lastX: this.state.offsetX,
             lastY: this.state.offsetY,
             lastScale: this.state.scale
           });
         } else {
+          this.resetOverlay();
           if(Math.abs(gestureState.dy) > DRAG_DISMISS_THRESHOLD) {
             this.setState({
               isPanning: false,
@@ -209,6 +212,7 @@ export default class LightboxOverlay extends Component {
     } else {
       this.setState({
         scale : 1.8,
+        lastScale : 1.8,
       });
     }
   }
