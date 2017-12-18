@@ -13,7 +13,7 @@ yarn add react-native-lightbox
 ```js
 import Lightbox from 'react-native-lightbox';
 
-const LightboxView ({ navigator }) => (
+const LightboxView = ({ navigator }) => (
   <Lightbox navigator={navigator}>
     <Image
       style={{ height: 300 }}
