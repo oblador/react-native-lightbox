@@ -7,6 +7,7 @@ import LightboxOverlay from './LightboxOverlay';
 export default class Lightbox extends Component {
   static propTypes = {
     activeProps:     PropTypes.object,
+    touchableProps:  PropTypes.object,
     renderHeader:    PropTypes.func,
     renderContent:   PropTypes.func,
     underlayColor:   PropTypes.string,
@@ -24,6 +25,7 @@ export default class Lightbox extends Component {
 
   static defaultProps = {
     swipeToDismiss: true,
+    touchableProps: {},
     onOpen: () => {},
     didOpen: () => {},
     willClose: () => {},
@@ -129,6 +131,7 @@ export default class Lightbox extends Component {
           <TouchableHighlight
             underlayColor={this.props.underlayColor}
             onPress={this.open}
+            {...this.props.touchableProps}
           >
             {this.props.children}
           </TouchableHighlight>
