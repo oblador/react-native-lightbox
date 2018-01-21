@@ -53,6 +53,7 @@ const MyApp = () => (
 | Prop | Type | Description |
 |---|---|---|
 |**`activeProps`**|`object`|Optional set of props applied to the content component when in lightbox mode. Usable for applying custom styles or higher resolution image source.|
+|**`touchableProps`**|`object`|Optional set of props applied to the touchable component. Usable for applying advance props such as onLongPress.|
 |**`renderHeader(close)`**|`function`|Custom header instead of default with X button|
 |**`renderContent`**|`function`|Custom lightbox content instead of default child content|
 |**`willClose`**|`function`|Triggered before lightbox is closed|
