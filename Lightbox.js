@@ -20,6 +20,8 @@ export default class Lightbox extends Component {
       friction:      PropTypes.number,
     }),
     swipeToDismiss:  PropTypes.bool,
+
+    renderMask: PropTypes.func,
   };
 
   static defaultProps = {
@@ -28,6 +30,7 @@ export default class Lightbox extends Component {
     didOpen: () => {},
     willClose: () => {},
     onClose: () => {},
+    renderMask: () => {},
   };
 
   state = {
@@ -117,6 +120,17 @@ export default class Lightbox extends Component {
     }
   }
 
+  _renderMask = () => {
+    if(this.props.renderMask) {
+      return (
+        <View style={{position: 'absolute'}}>
+          {this.props.renderMask()}
+        </View>
+      );
+    }
+    return null;
+  }
+
   render() {
     // measure will not return anything useful if we dont attach a onLayout handler on android
     return (
@@ -130,7 +144,10 @@ export default class Lightbox extends Component {
             underlayColor={this.props.underlayColor}
             onPress={this.open}
           >
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
             {this.props.children}
+            {this._renderMask()}
+          </View>
           </TouchableHighlight>
         </Animated.View>
         {this.props.navigator ? false : <LightboxOverlay {...this.getOverlayProps()} />}
