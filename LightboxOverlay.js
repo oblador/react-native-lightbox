@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Children, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import { Animated, Dimensions, Modal, PanResponder, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const DRAG_DISMISS_THRESHOLD = 150;
+const DRAG_SWIPE_THRESHOLD = WINDOW_WIDTH / 3;
 const STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
 const isIOS = Platform.OS === 'ios';
 
@@ -77,6 +78,7 @@ export default class LightboxOverlay extends Component {
   state = {
     isAnimating: false,
     isPanning: false,
+    isSwiping: false,
     target: {
       x: 0,
       y: 0,
@@ -90,7 +92,9 @@ export default class LightboxOverlay extends Component {
     offsetX: 0,
     offsetY: 0,
     lastX: 0,
-    lastY: 0
+    lastY: 0,
+
+    currentChildren: this.props.children,
   };
 
   distant = 150;
@@ -101,6 +105,18 @@ export default class LightboxOverlay extends Component {
 		prevTouchY: 0,
 		prevTouchTimeStamp: 0,
 	};
+
+  getContent = () => {
+    if(this.props.renderContent) {
+      return this.props.renderContent();
+    } else if(this.props.activeProps) {
+      return cloneElement(
+        Children.only(this.state.currentChildren),
+        this.props.activeProps
+      );
+    }
+    return this.state.currentChildren;
+  }
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
@@ -146,12 +162,17 @@ export default class LightboxOverlay extends Component {
           this.setState({ scale });
         }
         // translate
-        else if (gestureState.numberActiveTouches === 1 && this.state.scale > 1) {
-          let offsetX = this.state.lastX + gestureState.dx / this.state.scale;
-          let offsetY = this.state.lastY + gestureState.dy / this.state.scale;
-          this.setState({ offsetX, offsetY });
-        } else {
-          this.state.pan.setValue(gestureState.dy);
+        else {
+          if (gestureState.numberActiveTouches === 1 && this.state.scale > 1) {
+            let offsetX = this.state.lastX + gestureState.dx / this.state.scale;
+            let offsetY = this.state.lastY + gestureState.dy / this.state.scale;
+            this.setState({ offsetX, offsetY });
+          } else { // swipe
+            if ( this.props.galleryMode && !this.state.isSwiping && Math.abs(gestureState.dx) > DRAG_SWIPE_THRESHOLD) {
+              this.swiper(gestureState.dx < 0)
+            }
+            this.state.pan.setValue(gestureState.dy);
+          }
         }
       },
 
@@ -179,7 +200,7 @@ export default class LightboxOverlay extends Component {
             Animated.spring(
               this.state.pan,
               { toValue: 0, ...this.props.springConfig }
-            ).start(() => { this.setState({ isPanning: false }); });
+            ).start(() => { this.setState({ isPanning: false, isSwiping: false }); });
           }
         }
       },
@@ -252,6 +273,16 @@ export default class LightboxOverlay extends Component {
     });
   }
 
+  swiper = (forward) => {
+    var galleryKeyArray = global.gallery.get(this.props.GKey);
+    var currentIndex = galleryKeyArray.map((e) => {return e._owner}).indexOf(this.state.currentChildren._owner);
+    var nextIndex = forward ? (currentIndex+1 >= galleryKeyArray.length ? currentIndex : currentIndex+1) : (currentIndex < 1 ? currentIndex : currentIndex-1 );
+    this.setState({
+      currentChildren: galleryKeyArray[nextIndex],
+      isSwiping: true,
+    });
+  }
+
   close = () => {
     this.props.willClose();
     if(isIOS) {
@@ -275,12 +306,18 @@ export default class LightboxOverlay extends Component {
 
   componentWillReceiveProps(props) {
     // reset dispaly also can been called here
+    this.setState({
+      currentChildren: props.children,
+    })
     if(this.props.isOpen != props.isOpen && props.isOpen) {
       this.open();
     }
   }
 
   render() {
+    // var galleryKeyArray = global.gallery.get(this.props.GKey);
+    // console.log('render index:' + galleryKeyArray.map((e) => {return e._owner}).indexOf(this.state.currentChildren._owner));
+
     const {
       isOpen,
       renderHeader,
@@ -339,7 +376,7 @@ export default class LightboxOverlay extends Component {
           {translateY: this.state.offsetY}
         ]
       }]} {...handlers}>
-          {this.props.children}
+          {this.getContent()}
       </Animated.View>
     );
 

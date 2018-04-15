@@ -1,0 +1,1 @@
+global.gallery = new Map();
