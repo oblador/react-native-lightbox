@@ -70,6 +70,12 @@ const MyApp = () => (
 
 ![Demo](https://cloud.githubusercontent.com/assets/378279/9074360/16eac5d6-3b09-11e5-90af-a69980e9f4be.gif)
 
+galleryMode
+![Demo](https://raw.githubusercontent.com/ZackLeonardo/react-native-lightbox/master/GalleryExample/Lightbox.png)
+
+![Demo](https://raw.githubusercontent.com/ZackLeonardo/react-native-lightbox/master/GalleryExample/lightbox.gif)
+
+
 ## Example
 
 Check full example in the `Example` folder.
