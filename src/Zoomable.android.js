@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Animated, PanResponder, StyleSheet, View } from 'react-native';
+import { SUPPORTS_NATIVE_ANIMATION_DRIVER } from './constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -101,10 +102,18 @@ export default class Zoomable extends PureComponent {
     };
 
     if (scale !== this.scale) {
-      Animated.timing(this.scaleValue, { toValue: scale, duration: 300 }).start();
+      Animated.timing(this.scaleValue, {
+        toValue: scale,
+        duration: 300,
+        useNativeDriver: SUPPORTS_NATIVE_ANIMATION_DRIVER,
+      }).start();
     }
     if (offset.x !== this.offset.x || offset.y !== this.offset.y) {
-      Animated.spring(this.offsetValue, { toValue: offset, duration: 300 }).start();
+      Animated.spring(this.offsetValue, {
+        toValue: offset,
+        duration: 300,
+        useNativeDriver: SUPPORTS_NATIVE_ANIMATION_DRIVER,
+      }).start();
     }
     this.scale = scale;
     this.offset = offset;
