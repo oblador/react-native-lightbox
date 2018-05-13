@@ -6,10 +6,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
-    flex: 1,
-    resizeMode: 'contain',
-  },
 });
 
 const calculateDistance = (x0, y0, x1, y1) =>
@@ -20,10 +16,8 @@ const calculateTouchDistance = touches =>
 
 const clamp = (value, max, min) => Math.max(Math.min(value, max), min);
 
-export default class ZoomableImage extends PureComponent {
+export default class Zoomable extends PureComponent {
   static propTypes = {
-    source: PropTypes.any.isRequired,
-    resizeMode: PropTypes.string.isRequired,
     minimumZoomScale: PropTypes.number,
     maximumZoomScale: PropTypes.number,
   };
@@ -31,7 +25,6 @@ export default class ZoomableImage extends PureComponent {
   static defaultProps = {
     minimumZoomScale: 1,
     maximumZoomScale: 3,
-    resizeMode: 'contain',
   };
 
   constructor(props) {
@@ -48,7 +41,7 @@ export default class ZoomableImage extends PureComponent {
 
     this.startOffset = initialOffset;
     this.startScale = initialScale;
-    this.startDistance = 0.1;
+    this.startDistance = 0;
 
     this.size = { width: 0, height: 0 };
 
@@ -57,43 +50,10 @@ export default class ZoomableImage extends PureComponent {
       onMoveShouldSetPanResponder: (event, gestureState) =>
         gestureState.dx > 2 || gestureState.dy > 2 || gestureState.numberActiveTouches === 2,
       onMoveShouldSetPanResponderCapture: (event, gestureState) => true,
-      onPanResponderGrant: (event, gestureState) => {
-        this.startOffset = this.offset;
-        this.startScale = this.scale;
-        if (gestureState.numberActiveTouches === 2) {
-          this.startDistance = calculateTouchDistance(event.nativeEvent.touches);
-        }
-      },
-      onPanResponderMove: (event, gestureState) => {
-        if (gestureState.numberActiveTouches === 1) {
-          const offset = this.calculateOffset(gestureState);
-          this.offset = offset;
-          this.offsetValue.setValue(offset);
-        } else if (gestureState.numberActiveTouches === 2) {
-          const scale = this.calculateScale(event.nativeEvent.touches);
-          this.scale = scale;
-          this.scaleValue.setValue(scale);
-        }
-      },
+      onPanResponderGrant: this.handlePanResponderGrant,
+      onPanResponderMove: this.handlePanResponderMove,
       onPanResponderTerminationRequest: (event, gestureState) => false,
-      onPanResponderRelease: (event, gestureState) => {
-        const scale = clamp(this.scale, this.props.maximumZoomScale, this.props.minimumZoomScale);
-        const verticalLeeway = (scale - 1) * this.size.height / scale / 2;
-        const horizontalLeeway = (scale - 1) * this.size.width / scale / 2;
-        const offset = {
-          x: clamp(this.offset.x, horizontalLeeway, -horizontalLeeway),
-          y: clamp(this.offset.y, verticalLeeway, -verticalLeeway),
-        };
-
-        if (scale !== this.scale) {
-          Animated.timing(this.scaleValue, { toValue: scale, duration: 300 }).start();
-        }
-        if (offset.x !== this.offset.x || offset.y !== this.offset.y) {
-          Animated.spring(this.offsetValue, { toValue: offset, duration: 300 }).start();
-        }
-        this.scale = scale;
-        this.offset = offset;
-      },
+      onPanResponderRelease: this.handlePanResponderRelease,
       onShouldBlockNativeResponder: (event, gestureState) => false,
     });
   }
@@ -104,35 +64,71 @@ export default class ZoomableImage extends PureComponent {
   });
 
   calculateScale = touches =>
-    calculateTouchDistance(touches) / this.startDistance * this.startScale;
+    calculateTouchDistance(touches) / this.startDistance * this.startScale || 0;
 
   handleLayout = event => {
     const { width, height } = event.nativeEvent.layout;
     this.size = { width, height };
   };
 
+  handlePanResponderGrant = (event, gestureState) => {
+    this.startOffset = this.offset;
+    this.startScale = this.scale;
+    if (gestureState.numberActiveTouches === 2) {
+      this.startDistance = calculateTouchDistance(event.nativeEvent.touches);
+    }
+  };
+
+  handlePanResponderMove = (event, gestureState) => {
+    if (gestureState.numberActiveTouches === 1) {
+      const offset = this.calculateOffset(gestureState);
+      this.offset = offset;
+      this.offsetValue.setValue(offset);
+    } else if (gestureState.numberActiveTouches === 2) {
+      const scale = this.calculateScale(event.nativeEvent.touches);
+      this.scale = scale;
+      this.scaleValue.setValue(scale);
+    }
+  };
+
+  handlePanResponderRelease = (event, gestureState) => {
+    const scale = clamp(this.scale, this.props.maximumZoomScale, this.props.minimumZoomScale);
+    const verticalLeeway = (scale - 1) * this.size.height / scale / 2;
+    const horizontalLeeway = (scale - 1) * this.size.width / scale / 2;
+    const offset = {
+      x: clamp(this.offset.x, horizontalLeeway, -horizontalLeeway),
+      y: clamp(this.offset.y, verticalLeeway, -verticalLeeway),
+    };
+
+    if (scale !== this.scale) {
+      Animated.timing(this.scaleValue, { toValue: scale, duration: 300 }).start();
+    }
+    if (offset.x !== this.offset.x || offset.y !== this.offset.y) {
+      Animated.spring(this.offsetValue, { toValue: offset, duration: 300 }).start();
+    }
+    this.scale = scale;
+    this.offset = offset;
+  };
+
   render() {
     return (
       <View
-        style={this.props.style || styles.container}
         onLayout={this.handleLayout}
+        style={this.props.style || styles.container}
         {...this.panResponder.panHandlers}
       >
-        <Animated.Image
-          source={this.props.source}
-          resizeMode={this.props.resizeMode}
+        <Animated.View
           style={{
             flex: 1,
-            width: null,
-            height: null,
             transform: [
               { scale: this.scaleValue },
               { translateX: this.offsetValue.x },
               { translateY: this.offsetValue.y },
             ],
           }}
-          fadeDuration={0}
-        />
+        >
+          {this.props.children}
+        </Animated.View>
       </View>
     );
   }

@@ -9,17 +9,10 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
   },
-  image: {
-    flex: 1,
-    width: null,
-    height: null,
-  },
 });
 
-export default class ZoomableImage extends PureComponent {
+export default class Zoomable extends PureComponent {
   static propTypes = {
-    source: PropTypes.any.isRequired,
-    resizeMode: PropTypes.string.isRequired,
     minimumZoomScale: PropTypes.number,
     maximumZoomScale: PropTypes.number,
   };
@@ -27,19 +20,18 @@ export default class ZoomableImage extends PureComponent {
   static defaultProps = {
     minimumZoomScale: 1,
     maximumZoomScale: 3,
-    resizeMode: 'contain',
   };
 
   render() {
     return (
       <ScrollView
-        style={this.props.style || styles.container}
-        contentContainerStyle={styles.contentContainer}
         centerContent
-        minimumZoomScale={this.props.minimumZoomScale}
+        contentContainerStyle={styles.contentContainer}
         maximumZoomScale={this.props.maximumZoomScale}
+        minimumZoomScale={this.props.minimumZoomScale}
+        style={this.props.style || styles.container}
       >
-        <Image source={this.props.source} resizeMode={this.props.resizeMode} style={styles.image} />
+        {this.props.children}
       </ScrollView>
     );
   }
