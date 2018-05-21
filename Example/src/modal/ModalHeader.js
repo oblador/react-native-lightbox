@@ -18,7 +18,7 @@ export default class ModalHeader extends PureComponent {
   render() {
     return (
       <Animated.View
-        style={[styles.container, { opacity: this.props.progress }]}
+        style={[styles.container, { opacity: this.props.opacity }]}
         pointerEvents="box-none"
       >
         <Button onPress={this.props.onClosePress} title="Close" />

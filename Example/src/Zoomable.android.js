@@ -21,6 +21,7 @@ export default class Zoomable extends PureComponent {
   static propTypes = {
     minimumZoomScale: PropTypes.number,
     maximumZoomScale: PropTypes.number,
+    onZoomScaleChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -118,6 +119,10 @@ export default class Zoomable extends PureComponent {
     }
     this.scale = scale;
     this.offset = offset;
+
+    if (this.startScale !== scale && this.props.onZoomScaleChange) {
+      this.props.onZoomScaleChange(scale);
+    }
   };
 
   render() {

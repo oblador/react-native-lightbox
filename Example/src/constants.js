@@ -1,6 +1,6 @@
 import { DeviceInfo, NativeModules, Platform } from 'react-native';
 
-export const IMAGE_PRESS_EVENT_NAME = 'imagePress';
+export const PRESENT_IMAGE_EVENT_NAME = 'PRESENT_IMAGE';
 
 // Ideally we'd use SafeAreaView for iPhone X support, but it's not available
 // on all versions and causes a jump after initial render

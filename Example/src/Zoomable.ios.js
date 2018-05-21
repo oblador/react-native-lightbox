@@ -15,6 +15,7 @@ export default class Zoomable extends PureComponent {
   static propTypes = {
     minimumZoomScale: PropTypes.number,
     maximumZoomScale: PropTypes.number,
+    onZoomScaleChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -22,13 +23,15 @@ export default class Zoomable extends PureComponent {
     maximumZoomScale: 3,
   };
 
-  zoomScale = 1;
+  state = {
+    zoomScale: 1,
+  };
 
   handlePress = () => {
-    if (this.zoomScale !== 1) {
-      if (this.scrollView) {
-        this.zoomScale = 1;
-        this.scrollView.setNativeProps({ zoomScale: 1 });
+    if (this.state.zoomScale !== 1) {
+      this.setState({ zoomScale: 1 });
+      if (this.props.onZoomScaleChange) {
+        this.props.onZoomScaleChange(1);
       }
     }
   };
@@ -37,8 +40,14 @@ export default class Zoomable extends PureComponent {
     this.scrollView = ref;
   };
 
-  handleScroll = event => {
-    this.zoomScale = event.nativeEvent.zoomScale;
+  handleScrollEndDrag = event => {
+    const { zoomScale } = event.nativeEvent;
+    if (this.state.zoomScale !== zoomScale) {
+      this.setState({ zoomScale });
+      if (this.props.onZoomScaleChange) {
+        this.props.onZoomScaleChange(zoomScale);
+      }
+    }
   };
 
   render() {
@@ -46,9 +55,11 @@ export default class Zoomable extends PureComponent {
       <ScrollView
         centerContent
         contentContainerStyle={styles.contentContainer}
+        scrollEnabled={this.state.zoomScale !== 1}
+        zoomScale={this.state.zoomScale}
         maximumZoomScale={this.props.maximumZoomScale}
         minimumZoomScale={this.props.minimumZoomScale}
-        onScrollEndDrag={this.handleScroll}
+        onScrollEndDrag={this.handleScrollEndDrag}
         ref={this.handleRef}
         scrollsToTop={false}
         style={this.props.style || styles.container}
