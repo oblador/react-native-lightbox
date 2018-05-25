@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Animated, Easing } from 'react-native';
-import { Provider } from '../PresenterContext';
-import { PRESENT_IMAGE_EVENT_NAME } from '../constants';
+import { Provider } from './PresenterContext';
+import { PRESENT_IMAGE_EVENT_NAME } from './constants';
 import Transitioner from './ModalTransitioner';
 
 const getIdFromSource = source =>

@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Animated, Dimensions, Platform, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import Carousel from '../Carousel';
-//import Zoomable from '../Zoomable.android';
-import Zoomable from '../Zoomable';
+import Carousel from './Carousel';
+import Zoomable from './Zoomable';
 
 const styles = StyleSheet.create({
   container: {
