@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Animated, Dimensions, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import Header from './ModalHeader';
 import Carousel from '../Carousel';
 //import Zoomable from '../Zoomable.android';
 import Zoomable from '../Zoomable';
@@ -9,10 +8,6 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 99999,
-  },
-  background: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000',
   },
   verticalScrollView: {
     flex: 1,
@@ -28,13 +23,18 @@ const styles = StyleSheet.create({
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 export default class ModalTransitioner extends PureComponent {
-  state = {
-    dismissing: false,
-    zoomed: false,
-  };
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      dismissing: false,
+      zoomed: false,
+      currentIndex: this.props.initialIndex,
+    };
+  }
 
   scrollYValue = new Animated.Value(DEVICE_HEIGHT);
-  dismissValue = this.scrollYValue.interpolate({
+  dismissProgress = this.scrollYValue.interpolate({
     inputRange: [DEVICE_HEIGHT / 2, DEVICE_HEIGHT, DEVICE_HEIGHT * 3 / 2],
     outputRange: [0, 1, 0],
     extrapolate: 'clamp',
@@ -55,6 +55,10 @@ export default class ModalTransitioner extends PureComponent {
     this.setState({ zoomed: zoomScale !== 1 });
   };
 
+  handleIndexChange = currentIndex => {
+    this.setState({ currentIndex });
+  }
+
   renderImage = ({ source }) => {
     const { ImageComponent, resizeMode } = this.props;
     return (
@@ -70,8 +74,7 @@ export default class ModalTransitioner extends PureComponent {
   };
 
   render() {
-    const { open, transitioning, initialIndex, images, onClose, progress } = this.props;
-    const chromeOpacity = Animated.multiply(progress, this.dismissValue);
+    const { open, transitioning, initialIndex, images, onClose, progress, ChromeComponent, BackgroundComponent } = this.props;
 
     return (
       <View
@@ -79,8 +82,16 @@ export default class ModalTransitioner extends PureComponent {
         pointerEvents={transitioning ? 'box-only' : open ? 'auto' : 'none'}
       >
         {open && <StatusBar animated barStyle="light-content" backgroundColor="black" />}
-        <Animated.View style={[styles.background, { opacity: chromeOpacity }]} />
-        <Header opacity={chromeOpacity} onClosePress={onClose} />
+        {!!BackgroundComponent && <BackgroundComponent openProgress={progress} dismissProgress={this.dismissProgress} />}
+        {!!ChromeComponent && (
+          <ChromeComponent
+            openProgress={progress}
+            dismissProgress={this.dismissProgress}
+            onClosePress={onClose}
+            image={images[this.state.currentIndex]}
+            images={images}
+          />
+        )}
         <Animated.View
           style={{
             flex: 1,
@@ -108,7 +119,7 @@ export default class ModalTransitioner extends PureComponent {
             onScrollEndDrag={this.handleScrollEndDrag}
             onScroll={this.handleScroll}
           >
-            <Carousel initialIndex={initialIndex} images={images} renderImage={this.renderImage} />
+            <Carousel initialIndex={initialIndex} onIndexChange={this.handleIndexChange} images={images} renderImage={this.renderImage} />
           </Animated.ScrollView>
         </Animated.View>
       </View>

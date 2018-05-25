@@ -131,6 +131,8 @@ export default class ModalPresenter extends Component {
         transitioning={transitioning}
         onClose={this.close}
         ImageComponent={this.props.ImageComponent}
+        ChromeComponent={this.props.ChromeComponent}
+        BackgroundComponent={this.props.BackgroundComponent}
       />
     );
   }

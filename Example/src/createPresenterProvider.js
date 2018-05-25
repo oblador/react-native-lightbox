@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import { Provider } from './PresenterContext';
 import EventEmitter from 'events';
 
-const createPresenterProvider = Presenter =>
+const createPresenterProvider = (Presenter, defaultProps = {}) =>
   class PresenterProvider extends Component {
     static propTypes = {
       ImageComponent: PropTypes.func,
       TouchableComponent: PropTypes.func,
+      ChromeComponent: PropTypes.func,
+      BackgroundComponent: PropTypes.func,
       defaultTouchableProps: PropTypes.object,
       eventEmitter: PropTypes.object,
     };
@@ -18,6 +20,7 @@ const createPresenterProvider = Presenter =>
       TouchableComponent: TouchableHighlight,
       defaultTouchableProps: {},
       eventEmitter: new EventEmitter(),
+      ...defaultProps,
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -51,6 +54,8 @@ const createPresenterProvider = Presenter =>
         <Fragment>
           <Provider value={this.state}>{this.props.children}</Provider>
           <Presenter
+            BackgroundComponent={this.props.BackgroundComponent}
+            ChromeComponent={this.props.ChromeComponent}
             ImageComponent={this.props.ImageComponent}
             eventEmitter={this.props.eventEmitter}
           />
