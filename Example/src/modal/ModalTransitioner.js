@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Animated, Dimensions, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { Animated, Dimensions, Platform, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import Carousel from '../Carousel';
 //import Zoomable from '../Zoomable.android';
 import Zoomable from '../Zoomable';
@@ -22,6 +22,16 @@ const styles = StyleSheet.create({
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
+const calculatePagedTargetY = ({ velocity, contentOffset, targetContentOffset }, pageSize = DEVICE_HEIGHT) => {
+  if (targetContentOffset) {
+    return targetContentOffset.y;
+  }
+  // This calculation is by all means incorrect, and the constant is
+  // just a guess. But it seems to be good enough.
+  const estimatedOffsetY = contentOffset.y - (velocity.y * 100);
+  return Math.round(estimatedOffsetY / pageSize) * pageSize;
+}
+
 export default class ModalTransitioner extends PureComponent {
   constructor(props) {
     super(props)
@@ -40,14 +50,32 @@ export default class ModalTransitioner extends PureComponent {
     extrapolate: 'clamp',
   });
 
+  handleScrollViewRef = ref => {
+    this.scrollViewRef = ref;
+    if (ref && Platform.OS === 'android') {
+      // Emulate contentOffset prop for android. Needs to be executed in next frame
+      // on android for unknow reasons.
+      setTimeout(() => {
+        ref.getNode().scrollTo({ y: DEVICE_HEIGHT, animated: false });
+      }, 0);
+    }
+  }
+
   handleScroll = Animated.event([{ nativeEvent: { contentOffset: { y: this.scrollYValue } } }], {
     useNativeDriver: true,
   });
 
   handleScrollEndDrag = event => {
-    const targetY = event.nativeEvent.targetContentOffset.y;
-    if ((!this.state.dismissing && targetY <= 0) || targetY >= 2 * DEVICE_HEIGHT) {
+    if (this.state.dismissing) {
+      return;
+    }
+    const targetY = calculatePagedTargetY(event.nativeEvent);
+    if (targetY <= 0 || targetY >= 2 * DEVICE_HEIGHT) {
       this.setState({ dismissing: true }, this.props.onClose);
+    }
+    if (Platform.OS === 'android' && this.scrollViewRef) {
+      // Emulate vertical pagingEnabled on android
+      this.scrollViewRef.getNode().scrollTo({ y: targetY, animated: true });
     }
   };
 
@@ -108,6 +136,7 @@ export default class ModalTransitioner extends PureComponent {
           }}
         >
           <Animated.ScrollView
+            ref={this.handleScrollViewRef}
             style={styles.verticalScrollView}
             pagingEnabled
             pinchGestureEnabled={false}
