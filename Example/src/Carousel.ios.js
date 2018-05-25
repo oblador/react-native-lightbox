@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Dimensions, View, ScrollView, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Dimensions, View, ScrollView, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,6 +14,7 @@ export default class Carousel extends PureComponent {
     initialIndex: PropTypes.number,
     gutterWidth: PropTypes.number,
     renderImage: PropTypes.func,
+    onIndexChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -32,6 +33,8 @@ export default class Carousel extends PureComponent {
 
   isInitialScroll = true;
 
+  getSnapToInterval = () => Dimensions.get('window').width + this.props.gutterWidth
+
   handleScroll = event => {
     if (this.isInitialScroll) {
       // Because of a bug in RN the initial onScroll event is always
@@ -39,13 +42,15 @@ export default class Carousel extends PureComponent {
       this.isInitialScroll = false;
       return;
     }
-    const { gutterWidth, images, renderImage } = this.props;
-    const pageWidth = Dimensions.get('window').width;
-    const snapToInterval = pageWidth + gutterWidth;
+    const { images, renderImage, onIndexChange } = this.props;
+    const snapToInterval = this.getSnapToInterval();
     const scrollX = event.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(scrollX / snapToInterval);
     if (this.state.currentIndex !== currentIndex) {
       this.setState({ currentIndex });
+      if (onIndexChange) {
+        onIndexChange(currentIndex);
+      }
     } else if (!this.state.didScroll) {
       this.setState({ didScroll: true });
     }
@@ -54,7 +59,7 @@ export default class Carousel extends PureComponent {
   render() {
     const { gutterWidth, images, initialIndex, renderImage } = this.props;
     const pageWidth = Dimensions.get('window').width;
-    const snapToInterval = pageWidth + gutterWidth;
+    const snapToInterval = this.getSnapToInterval();
     const indicesToRender = this.state.didScroll
       ? Array(3)
           .fill(this.state.currentIndex - 1)
@@ -64,6 +69,7 @@ export default class Carousel extends PureComponent {
 
     return (
       <ScrollView
+        ref={this.handleRef}
         scrollsToTop={false}
         horizontal
         showsHorizontalScrollIndicator={false}
