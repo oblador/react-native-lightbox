@@ -122,7 +122,7 @@ export default class Lightbox extends Component {
     if (this.props.onLongPress) {
       result = this.props.onLongPress(...args);
     } else {
-      result = () => {}; // default behaviour is "do nothing"
+      result = null; // default behaviour is "do nothing"
     }
 
     return result;
