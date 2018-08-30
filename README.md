@@ -63,10 +63,18 @@ const MyApp = () => (
 |**`backgroundColor`**|`string`|Color of lightbox background, defaults to `black`|
 |**`swipeToDismiss`**|`bool`|Enables gestures to dismiss the fullscreen mode by swiping up or down, defaults to `true`.|
 |**`springConfig`**|`object`|[`Animated.spring`](https://facebook.github.io/react-native/docs/animations.html) configuration, defaults to `{ tension: 30, friction: 7 }`.|
+|**`galleryMode`**|`bool`|Set true to enable gallery |
+|**`GKey`**|`string`|setted in galleryMode, swipe to change LightboxOverlay with the same GKey|
 
 ## Demo
 
 ![Demo](https://cloud.githubusercontent.com/assets/378279/9074360/16eac5d6-3b09-11e5-90af-a69980e9f4be.gif)
+
+galleryMode
+![Demo](https://raw.githubusercontent.com/ZackLeonardo/react-native-lightbox/master/GalleryExample/Lightbox.png)
+
+![Demo](https://raw.githubusercontent.com/ZackLeonardo/react-native-lightbox/master/GalleryExample/lightbox.gif)
+
 
 ## Example
 

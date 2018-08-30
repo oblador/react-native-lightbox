@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Animated, TouchableHighlight, View } from 'react-native';
 
 import LightboxOverlay from './LightboxOverlay';
+import './Gallery';
 
 export default class Lightbox extends Component {
   static propTypes = {
@@ -20,6 +21,9 @@ export default class Lightbox extends Component {
       friction:      PropTypes.number,
     }),
     swipeToDismiss:  PropTypes.bool,
+
+    renderMask: PropTypes.func,
+
   };
 
   static defaultProps = {
@@ -28,6 +32,8 @@ export default class Lightbox extends Component {
     didOpen: () => {},
     willClose: () => {},
     onClose: () => {},
+    renderMask: () => {},
+
   };
 
   state = {
@@ -39,18 +45,25 @@ export default class Lightbox extends Component {
       height: 0,
     },
     layoutOpacity: new Animated.Value(1),
+
   };
 
-  getContent = () => {
-    if(this.props.renderContent) {
-      return this.props.renderContent();
-    } else if(this.props.activeProps) {
-      return cloneElement(
-        Children.only(this.props.children),
-        this.props.activeProps
-      );
+  componentWillMount(){
+    if (this.props.galleryMode){
+      var GKeyArray = global.gallery.get(this.props.GKey);
+      if (!!GKeyArray){
+        GKeyArray.push(this.props.children)
+      } else {
+        GKeyArray = [this.props.children]
+      }
+
+      global.gallery.set(this.props.GKey, GKeyArray);
     }
-    return this.props.children;
+
+  }
+
+  componentWillUnmount(){
+    global.gallery.delete(this.props.GKey);
   }
 
   getOverlayProps = () => ({
@@ -60,7 +73,9 @@ export default class Lightbox extends Component {
     swipeToDismiss: this.props.swipeToDismiss,
     springConfig: this.props.springConfig,
     backgroundColor: this.props.backgroundColor,
-    children: this.getContent(),
+    children: this.props.children,//this.getContent(),
+    activeProps: this.props.activeProps,
+    renderContent: this.props.renderContent,
     didOpen: this.props.didOpen,
     willClose: this.props.willClose,
     onClose: this.onClose,
@@ -117,6 +132,17 @@ export default class Lightbox extends Component {
     }
   }
 
+  _renderMask = () => {
+    if(this.props.renderMask) {
+      return (
+        <View style={{position: 'absolute'}}>
+          {this.props.renderMask()}
+        </View>
+      );
+    }
+    return null;
+  }
+
   render() {
     // measure will not return anything useful if we dont attach a onLayout handler on android
     return (
@@ -130,10 +156,13 @@ export default class Lightbox extends Component {
             underlayColor={this.props.underlayColor}
             onPress={this.open}
           >
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
             {this.props.children}
+            {this._renderMask()}
+          </View>
           </TouchableHighlight>
         </Animated.View>
-        {this.props.navigator ? false : <LightboxOverlay {...this.getOverlayProps()} />}
+        {this.props.navigator ? false : <LightboxOverlay galleryMode={this.props.galleryMode} GKey={this.props.GKey} {...this.getOverlayProps()} />}
       </View>
     );
   }
