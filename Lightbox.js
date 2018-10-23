@@ -28,6 +28,7 @@ export default class Lightbox extends Component {
     didOpen: () => {},
     willClose: () => {},
     onClose: () => {},
+    onLongPress: () => {},
   };
 
   state = {
@@ -117,17 +118,6 @@ export default class Lightbox extends Component {
     }
   }
 
-  onLongPress = (...args) => {
-    let result;
-    if (this.props.onLongPress) {
-      result = this.props.onLongPress(...args);
-    } else {
-      result = null; // default behaviour is "do nothing"
-    }
-
-    return result;
-  }
-
   render() {
     // measure will not return anything useful if we dont attach a onLayout handler on android
     return (
@@ -140,7 +130,7 @@ export default class Lightbox extends Component {
           <TouchableHighlight
             underlayColor={this.props.underlayColor}
             onPress={this.open}
-            onLongPress={this.onLongPress}
+            onLongPress={this.props.onLongPress}
           >
             {this.props.children}
           </TouchableHighlight>
