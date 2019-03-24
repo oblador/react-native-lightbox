@@ -11,6 +11,7 @@ export default class Lightbox extends Component {
     renderContent:   PropTypes.func,
     underlayColor:   PropTypes.string,
     backgroundColor: PropTypes.string,
+    backgroundPosition:  PropTypes.string,
     didOpen:         PropTypes.func,
     onOpen:          PropTypes.func,
     willClose:       PropTypes.func,
@@ -60,11 +61,12 @@ export default class Lightbox extends Component {
     swipeToDismiss: this.props.swipeToDismiss,
     springConfig: this.props.springConfig,
     backgroundColor: this.props.backgroundColor,
+    backgroundPosition: this.props.backgroundPosition,
     children: this.getContent(),
     didOpen: this.props.didOpen,
     willClose: this.props.willClose,
     onClose: this.onClose,
-  })
+});
 
   open = () => {
     this._root.measure((ox, oy, width, height, px, py) => {
