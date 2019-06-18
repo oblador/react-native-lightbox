@@ -5,31 +5,6 @@ import { Animated, TouchableHighlight, View } from 'react-native';
 import LightboxOverlay from './LightboxOverlay';
 
 export default class Lightbox extends Component {
-  static propTypes = {
-    activeProps:     PropTypes.object,
-    renderHeader:    PropTypes.func,
-    renderContent:   PropTypes.func,
-    underlayColor:   PropTypes.string,
-    backgroundColor: PropTypes.string,
-    didOpen:         PropTypes.func,
-    onOpen:          PropTypes.func,
-    willClose:       PropTypes.func,
-    onClose:         PropTypes.func,
-    springConfig:    PropTypes.shape({
-      tension:       PropTypes.number,
-      friction:      PropTypes.number,
-    }),
-    swipeToDismiss:  PropTypes.bool,
-  };
-
-  static defaultProps = {
-    swipeToDismiss: true,
-    onOpen: () => {},
-    didOpen: () => {},
-    willClose: () => {},
-    onClose: () => {},
-  };
-
   state = {
     isOpen: false,
     origin: {
@@ -138,3 +113,32 @@ export default class Lightbox extends Component {
     );
   }
 }
+
+Lightbox.propTypes = {
+  activeProps: PropTypes.object,
+  renderHeader: PropTypes.func,
+  renderContent: PropTypes.func,
+  underlayColor: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  didOpen: PropTypes.func,
+  onOpen: PropTypes.func,
+  willClose: PropTypes.func,
+  onClose: PropTypes.func,
+  springConfig: PropTypes.shape({
+    tension: PropTypes.number,
+    friction: PropTypes.number,
+  }),
+  swipeToDismiss: PropTypes.bool,
+};
+
+Lightbox.defaultProps = {
+  swipeToDismiss: true,
+  onOpen: () => {
+  },
+  didOpen: () => {
+  },
+  willClose: () => {
+  },
+  onClose: () => {
+  },
+};
