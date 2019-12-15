@@ -72,19 +72,19 @@ export default class LightboxOverlay extends Component {
     backgroundColor: 'black',
   };
 
-  state = {
-    isAnimating: false,
-    isPanning: false,
-    target: {
-      x: 0,
-      y: 0,
-      opacity: 1,
-    },
-    pan: new Animated.Value(0),
-    openVal: new Animated.Value(0),
-  };
-
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isAnimating: false,
+      isPanning: false,
+      target: {
+        x: 0,
+        y: 0,
+        opacity: 1,
+      },
+      pan: new Animated.Value(0),
+      openVal: new Animated.Value(0),
+    };
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
       onStartShouldSetPanResponder: (evt, gestureState) => !this.state.isAnimating,
@@ -170,8 +170,8 @@ export default class LightboxOverlay extends Component {
     });
   }
 
-  componentWillReceiveProps(props) {
-    if(this.props.isOpen != props.isOpen && props.isOpen) {
+  componentDidUpdate(prevProps) {
+    if(this.props.isOpen !== prevProps.isOpen && this.props.isOpen) {
       this.open();
     }
   }
