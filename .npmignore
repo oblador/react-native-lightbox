@@ -2,3 +2,6 @@ logs
 *.log
 node_modules
 Example
+.github
+yarn.lock
+.editorconfig
