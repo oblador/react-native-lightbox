@@ -7,6 +7,8 @@ import LightboxOverlay from './LightboxOverlay';
 export default class Lightbox extends Component {
   static propTypes = {
     activeProps:     PropTypes.object,
+    openingProps:     PropTypes.object,
+    closingProps:     PropTypes.object,
     renderHeader:    PropTypes.func,
     renderContent:   PropTypes.func,
     underlayColor:   PropTypes.string,
@@ -45,18 +47,16 @@ export default class Lightbox extends Component {
   getContent = () => {
     if(this.props.renderContent) {
       return this.props.renderContent();
-    } else if(this.props.activeProps) {
-      return cloneElement(
-        Children.only(this.props.children),
-        this.props.activeProps
-      );
-    }
+    } 
     return this.props.children;
   }
 
   getOverlayProps = () => ({
     isOpen: this.state.isOpen,
     origin: this.state.origin,
+    activeProps: this.props.activeProps,
+    openingProps: this.props.openingProps,
+    closingProps: this.props.closingProps,
     renderHeader: this.props.renderHeader,
     swipeToDismiss: this.props.swipeToDismiss,
     springConfig: this.props.springConfig,
