@@ -61,6 +61,7 @@ const MyApp = () => (
 |**`didOpen`**|`function`|Triggered after lightbox is opened|
 |**`underlayColor`**|`string`|Color of touchable background, defaults to `black`|
 |**`backgroundColor`**|`string`|Color of lightbox background, defaults to `black`|
+|**`backgroundPosition`**|`string`|Position of lightbox background, defaults to `center`. Value of [justifyContent](https://facebook.github.io/react-native/docs/flexbox#justify-content).|
 |**`swipeToDismiss`**|`bool`|Enables gestures to dismiss the fullscreen mode by swiping up or down, defaults to `true`.|
 |**`springConfig`**|`object`|[`Animated.spring`](https://facebook.github.io/react-native/docs/animations.html) configuration, defaults to `{ tension: 30, friction: 7 }`.|
 

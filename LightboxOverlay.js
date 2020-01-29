@@ -59,13 +59,14 @@ export default class LightboxOverlay extends Component {
       friction: PropTypes.number,
     }),
     backgroundColor: PropTypes.string,
+    backgroundPosition: PropTypes.string,
     isOpen:          PropTypes.bool,
     renderHeader:    PropTypes.func,
     onOpen:          PropTypes.func,
     onClose:         PropTypes.func,
     willClose:         PropTypes.func,
     swipeToDismiss:  PropTypes.bool,
-  };
+};
 
   static defaultProps = {
     springConfig: { tension: 30, friction: 7 },
@@ -183,6 +184,7 @@ export default class LightboxOverlay extends Component {
       swipeToDismiss,
       origin,
       backgroundColor,
+      backgroundPosition,
     } = this.props;
 
     const {
@@ -209,7 +211,9 @@ export default class LightboxOverlay extends Component {
       lightboxOpacityStyle.opacity = this.state.pan.interpolate({inputRange: [-WINDOW_HEIGHT, 0, WINDOW_HEIGHT], outputRange: [0, 1, 0]});
     }
 
-    const openStyle = [styles.open, {
+    const openStyle = [styles.open,
+    backgroundPosition && { justifyContent: backgroundPosition },
+    {
       left:   openVal.interpolate({inputRange: [0, 1], outputRange: [origin.x, target.x]}),
       top:    openVal.interpolate({inputRange: [0, 1], outputRange: [origin.y + STATUS_BAR_OFFSET, target.y + STATUS_BAR_OFFSET]}),
       width:  openVal.interpolate({inputRange: [0, 1], outputRange: [origin.width, WINDOW_WIDTH]}),
