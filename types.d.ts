@@ -1,5 +1,5 @@
 declare module 'react-native-lightbox' {
-  import { Animated } from 'react-native'
+  import { Animated, StyleProp, ViewStyle } from 'react-native'
 
   interface LightboxProps {
     activeProps?: any
@@ -13,6 +13,7 @@ declare module 'react-native-lightbox' {
     onClose?: () => void
     springConfig?: Animated.SpringAnimationConfig['friction' | 'tension']
     swipeToDismiss?: boolean
+    style: StyleProp<ViewStyle>
   }
 
   const Lightbox: React.FC<LightboxProps>
