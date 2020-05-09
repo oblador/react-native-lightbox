@@ -5,7 +5,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { Animated, TouchableHighlight, View } from "react-native";
+import { Animated, TouchableOpacity, View } from "react-native";
 import PropTypes from "prop-types";
 import LightboxOverlay from "./LightboxOverlay";
 
@@ -97,13 +97,13 @@ const Lightbox = (props) => {
   return (
     <View ref={_root} style={props.style} onLayout={() => {}}>
       <Animated.View style={{ opacity: layoutOpacity.current }}>
-        <TouchableHighlight
+        <TouchableOpacity
           underlayColor={props.underlayColor}
           onPress={open}
           onLongPress={props.onLongPress}
         >
           {props.children}
-        </TouchableHighlight>
+        </TouchableOpacity>
       </Animated.View>
       {props.navigator ? false : <LightboxOverlay {...getOverlayProps()} />}
     </View>
