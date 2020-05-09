@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
   closeButton: {
     fontSize: 35,
     color: "white",
-    lineHeight: 40,
-    width: 40,
+    lineHeight: 60,
+    width: 70,
     textAlign: "center",
     shadowOffset: {
       width: 0,
