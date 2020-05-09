@@ -16,7 +16,6 @@ import {
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const DRAG_DISMISS_THRESHOLD = 150;
-const STATUS_BAR_OFFSET = Platform.OS === "android" ? -25 : 0;
 const isIOS = Platform.OS === "ios";
 
 const styles = StyleSheet.create({
@@ -187,8 +186,8 @@ const LightboxOverlay = (props) => {
       top: openVal.current.interpolate({
         inputRange: [0, 1],
         outputRange: [
-          props.origin.y + STATUS_BAR_OFFSET,
-          target.y + STATUS_BAR_OFFSET,
+          props.origin.y ,
+          target.y,
         ],
       }),
       width: openVal.current.interpolate({
