@@ -20,6 +20,7 @@ export default class Lightbox extends Component {
       friction:      PropTypes.number,
     }),
     swipeToDismiss:  PropTypes.bool,
+    useNativeDriver: PropTypes.bool
   };
 
   static defaultProps = {
@@ -29,6 +30,7 @@ export default class Lightbox extends Component {
     willClose: () => {},
     onClose: () => {},
     onLongPress: () => {},
+    useNativeDriver: true
   };
 
   state = {
@@ -65,6 +67,7 @@ export default class Lightbox extends Component {
     didOpen: this.props.didOpen,
     willClose: this.props.willClose,
     onClose: this.onClose,
+    useNativeDriver: this.props.useNativeDriver
   })
 
   open = () => {
