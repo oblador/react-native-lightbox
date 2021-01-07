@@ -63,13 +63,15 @@ export default class LightboxOverlay extends Component {
     renderHeader:    PropTypes.func,
     onOpen:          PropTypes.func,
     onClose:         PropTypes.func,
-    willClose:         PropTypes.func,
+    willClose:       PropTypes.func,
     swipeToDismiss:  PropTypes.bool,
+    useNativeDriver: PropTypes.bool,
   };
 
   static defaultProps = {
     springConfig: { tension: 30, friction: 7 },
     backgroundColor: 'black',
+    useNativeDriver: false,
   };
 
   constructor(props) {
@@ -99,7 +101,7 @@ export default class LightboxOverlay extends Component {
       onPanResponderMove: Animated.event([
         null,
         { dy: this.state.pan }
-      ]),
+      ], { useNativeDriver: props.useNativeDriver }),
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
         if(Math.abs(gestureState.dy) > DRAG_DISMISS_THRESHOLD) {
@@ -115,7 +117,7 @@ export default class LightboxOverlay extends Component {
         } else {
           Animated.spring(
             this.state.pan,
-            { toValue: 0, ...this.props.springConfig }
+            { toValue: 0, useNativeDriver: props.useNativeDriver, ...this.props.springConfig }
           ).start(() => { this.setState({ isPanning: false }); });
         }
       },
@@ -144,7 +146,7 @@ export default class LightboxOverlay extends Component {
 
     Animated.spring(
       this.state.openVal,
-      { toValue: 1, ...this.props.springConfig }
+      { toValue: 1, useNativeDriver: this.props.useNativeDriver, ...this.props.springConfig }
     ).start(() => {
       this.setState({ isAnimating: false });
       this.props.didOpen();
@@ -161,7 +163,7 @@ export default class LightboxOverlay extends Component {
     });
     Animated.spring(
       this.state.openVal,
-      { toValue: 0, ...this.props.springConfig }
+      { toValue: 0, useNativeDriver: this.props.useNativeDriver, ...this.props.springConfig }
     ).start(() => {
       this.setState({
         isAnimating: false,
