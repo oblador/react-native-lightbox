@@ -82,8 +82,8 @@ export default class LightboxOverlay extends Component {
       },
       pan: new Animated.Value(0),
       openVal: new Animated.Value(0),
-      windowWidth: 0,
-      windowHeight: 0,
+      windowWidth: Dimensions.get('window').width,
+      windowHeight: Dimensions.get('window').height,
     };
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
