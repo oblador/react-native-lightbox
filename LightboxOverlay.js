@@ -69,7 +69,7 @@ export default class LightboxOverlay extends Component {
 
   static defaultProps = {
     springConfig: { tension: 30, friction: 7 },
-    backgroundColor: 'black',
+    backgroundColor: 'red',
   };
 
   constructor(props) {
@@ -216,7 +216,7 @@ export default class LightboxOverlay extends Component {
       height: openVal.interpolate({inputRange: [0, 1], outputRange: [origin.height, WINDOW_HEIGHT]}),
     }];
 
-    const background = (<Animated.View style={[styles.background, { backgroundColor: backgroundColor }, lightboxOpacityStyle]}></Animated.View>);
+    const background = (<TouchableOpacity style={[styles.background, { backgroundColor: backgroundColor }, lightboxOpacityStyle]} onPress={this.close}></TouchableOpacity>);
     const header = (<Animated.View style={[styles.header, lightboxOpacityStyle]}>{(renderHeader ?
       renderHeader(this.close) :
       (
