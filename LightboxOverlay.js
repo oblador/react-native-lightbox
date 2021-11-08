@@ -96,10 +96,11 @@ export default class LightboxOverlay extends Component {
         this.state.pan.setValue(0);
         this.setState({ isPanning: true });
       },
-      onPanResponderMove: Animated.event([
+      onPanResponderMove:()=> Animated.event([
         null,
         { dy: this.state.pan }
-      ]),
+       
+      ],{useNativeDriver:true}),
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
         if(Math.abs(gestureState.dy) > DRAG_DISMISS_THRESHOLD) {
